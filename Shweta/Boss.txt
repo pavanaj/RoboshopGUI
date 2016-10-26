@@ -1,0 +1,105 @@
+	void Boss::Sales_Report()
+	{
+		double total_sales;
+		string ans;
+		string date;
+		double max;
+		vector<double> ts;
+		int index_no;
+		int k;
+		for (int i = 0; i < Order_Details.size(); i++)
+		{
+			for (int j = 1; j < Order_Details.size(); j++)
+			{
+				if (Order_Details[i].sa_name == Order_Details[j].sa_name)
+				{
+					total_sales = total_sales + Order_Details[j].net_total;
+				}
+				else
+				{
+					total_sales = Order_Details[i].net_total;
+				}
+			}
+			ts.push_back(total_sales);
+			cout << i << ". Name of Sales Associate : " << Order_Details[i].sa_name << " Total Sales : $" << ts[i] << endl;
+		}
+		cout << "Do you want to view a detailed report. Y/N" << endl;
+		cin >> ans;
+		if (ans == "y"||ans=="Y")
+		{
+			cout << "Enter the index number for the details of the Sales Associate you want to view" << endl;
+			cin >> index_no;
+			cout << Order_Details[index_no].sa_name << "\t" << ts[index_no] << endl;
+			cout << Order_Details[index_no].order_no << "\n" << Order_Details[index_no].cust_name << "\n" << Order_Details[index_no].robots_ordered << "\n" << Order_Details[index_no].sales_date << "\n" << Order_Details[index_no].model_name << "\n" << Order_Details[index_no].net_total << endl;
+		}
+
+		max = ts[0];
+		for (int i = 1; i < ts.size(); i++)
+		{
+			if (ts[i] > max)
+			{
+				max = ts[i];
+				k = i;
+			}
+		}
+		cout << "The highest sale was $ " << max << endl;
+	}
+
+	void Boss::Print_Orders()
+	{
+		cout << "The following is the list of Orders for Robo shop:" << endl;
+		for (int i = 0; i < Order_Details.size(); i++)
+		{
+			cout << Order_Details[i].order_no << "\t" << Order_Details[i].cust_name << "\t" <<
+				Order_Details[i].robots_ordered << "\t" << Order_Details[i].sa_name << "\t" << Order_Details[i].sales_date << "\t" <<
+				Order_Details[i].model_name << "\t" << Order_Details[i].net_total << endl;
+		}
+	}
+
+	void Boss::Profit()
+	{
+		int pft;
+		vector<double> rp;
+		for (int i = 0; i < Robot_Parts.size(); i++)
+		{
+			for (int j = 1; j < Robot_Parts.size(); j++)
+			{
+				if (Robot_Parts[i].r_name == Robot_Parts[j].r_name)
+				{
+					pft = pft + Robot_Parts[j].r_profit;
+				}
+				else
+				{
+					pft= Robot_Parts[i].r_profit;
+				}
+			}
+			rp.push_back(pft);
+			cout << i << ". Robot Name : " << Robot_Parts[i].r_name << " Total Profit : " << rp[i] << endl;
+		}
+		
+	}
+
+	void Boss::Models_Sold()
+	{
+		
+		int r_sold;
+		vector<int> rs;
+		for (int i = 0; i < Order_Details.size(); i++)
+		{
+			for (int j = 1; j < Order_Details.size(); j++)
+			{
+				if (Order_Details[i].model_name == Order_Details[j].model_name)
+				{
+					r_sold = r_sold + Order_Details[j].robots_ordered;
+				}
+				else
+				{
+					r_sold= Order_Details[i].robots_ordered;
+				}
+			}
+			rs.push_back(r_sold);
+			cout << i << ". Model Name : " << Order_Details[i].model_name << " Robots sold : " << rs[i] << endl;
+		}
+		
+	}
+

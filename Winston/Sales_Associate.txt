@@ -1,0 +1,82 @@
+void Sales_Associate::Place_Order()
+{
+	cout << "Enter Order No : ";
+	cin>>O.order_no;
+
+	cout << "Enter Sales Associate name : ";
+	cin.ignore();
+	getline(cin, O.sa_name);
+
+	cout << "Enter Customer No : ";
+	cin >> O.cust_no;
+
+	cout << "Enter Customer Name : ";
+	cin.ignore();
+	getline(cin, O.cust_name);
+
+	cout << "Enter Order's date : ";
+	cin.ignore();
+	getline(cin, O.sales_date);
+
+	cout << "Enter Model Name : ";
+	cin.ignore();
+	getline(cin, O.model_name);
+
+	cout << "Enter No. of Robots : ";
+	cin >> O.robots_ordered;
+
+	for (int i = 0; i <= Robot_Parts.size(); i++)
+	{
+		if (O.model_name == Robot_Parts[i].r_name)
+		{
+			O.sub_total = Robot_Parts[i].r_price*O.robots_ordered;
+		}
+	}
+	O.shipping = O.sub_total*0.10;
+	O.tax = O.sub_total*.0825;
+	O.net_total = O.sub_total + O.shipping + O.tax;
+
+}
+
+void Sales_Associate::Print()
+{
+	cout << "Order number: " << O.order_no << endl;
+	cout << "Customer number: " << O.cust_no << endl;
+	cout << "Your sales associate: " << O.sa_name << endl;
+	cout << "Sale date: " << O.sales_date << endl;
+	cout << endl;
+	cout << "Number of robots ordered: " << O.robots_ordered << endl;
+	cout << "Model ordered: " << O.model_name << endl;
+	cout << endl;
+	cout << "Subtotal: $ " << O.sub_total << endl;
+	cout << "Shipping: $ " << O.shipping << endl;
+	cout << "Tax:      $ " << O.tax << endl;
+	cout << endl;
+	cout << "Total:    $ " << O.net_total;
+
+}
+
+void Sales_Associate::Report()
+{
+	string sa_search_name;
+	double sales_total = 0;
+	
+	cout << "Enter your name for your sales report." << endl;
+	cin.ignore();
+	getline(cin, sa_search_name);
+	
+	for (int i = 0; i <= Order_Details.size(); i++)
+	{
+		if (sa_search_name == Order_Details[i].sa_name)
+		{
+		    cout << Order number: " << Order_Details[i].order_no << endl;
+			cout << Customer:     " << Order_Details[i].cust.name << endl;
+			cout << Total:        $" << Order_Details[i].net_total << endl;
+			cout << endl;
+			
+			sales_total = sales_total + Order_Details[i].net_total;
+		}
+	}
+	
+	cout << "Total sales done by " << sa_search_name << ": $" << sales_total;
+	
