@@ -1,8 +1,14 @@
 CSE 1325-003 Homework #6
 
+
 Pavanaj Biyani - 1001236871
+
 Kartik Gupta - 1001228675
+
 Shweta Shikarkhane - 1001192846
+
 Winston Starling - 1001346251
+
+
 
 Bit Bucket - https://pavanaj@bitbucket.org/pavanaj/cse-1325-hw-6.git
