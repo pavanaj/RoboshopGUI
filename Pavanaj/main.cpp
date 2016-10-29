@@ -33,15 +33,35 @@ vector <Robots> Robot_Parts;
 struct Detailed_Catalog
 {
 	string head_name;
+	string head_type;
+	double head_cost;
+	double head_weight;
+	string head_partno;
 	string torso_name;
+	string torso_type;
+	double torso_cost;
+	double torso_weight;
+	string torso_partno;
 	int compartments;
 	string locomoter_name;
+	string locomoter_type;
+	double locomoter_cost;
+	double locomoter_weight;
+	string locomoter_partno;
 	double max_speed;
 	double power_consumed;
 	string battery_name;
+	string battery_type;
+	double battery_cost;
+	double battery_weight;
+	string battery_partno;
 	double max_power;
 	double energy;
 	string arms_name;
+	string arms_type;
+	double arms_cost;
+	double arms_weight;
+	string arms_partno;
 	int no_of_arms;
 	double arms_power;
 }DC;
@@ -72,7 +92,8 @@ vector <Orders> Order_Details;
 		cin.ignore();
 		getline(cin, type);
 		cout << "Part No : ";
-		cin >> part_no;
+		cin.ignore();
+		getline(cin, part_no);
 		cout << "Part Name : ";
 		cin.ignore();
 		getline(cin, name);
@@ -142,26 +163,46 @@ vector <Orders> Order_Details;
 		Head h;
 		R.h_cost = h.input();
 		DC.head_name = h.name;
+		DC.head_type = h.type;
+		DC.head_cost = h.cost;
+		DC.head_weight = h.weight;
+		DC.head_partno = h.part_no;
 		cout << "Torso specs\n";
 		Torso t;
 		R.t_cost = t.input();
 		t.t_input();
 		DC.torso_name = t.name;
+		DC.torso_type = t.type;
+		DC.torso_cost = t.cost;
+		DC.torso_weight = t.weight;
+		DC.torso_partno = t.part_no;
 		cout << "Arms specs\n";
 		Arms a;
 		R.a_cost = a.input();
 		a.a_input();
 		DC.arms_name = a.name;
+		DC.arms_type = a.type;
+		DC.arms_cost = a.cost;
+		DC.arms_weight = a.weight;
+		DC.arms_partno = a.part_no;
 		cout << "Battery specs\n";
 		Battery b;
 		R.b_cost = b.input();
 		b.b_input();
 		DC.battery_name = b.name;
+		DC.battery_type = b.type;
+		DC.battery_cost = b.cost;
+		DC.battery_weight = b.weight;
+		DC.battery_partno = b.part_no;
 		cout << "Locomoter specs\n";
 		Locomoter l;
 		R.l_cost = l.input();
 		l.l_input();
 		DC.locomoter_name = l.name;
+		DC.locomoter_type = l.type;
+		DC.locomoter_cost = l.cost;
+		DC.locomoter_weight = l.weight;
+		DC.locomoter_partno = l.part_no;
 	}
 
 	double Product_Manager::Calc_Cost()
@@ -272,9 +313,9 @@ vector <Orders> Order_Details;
 		int model;
 
 		cout << "Sr. No.\tName\tPrice\tDescription" << endl;
-		for (i = 1; i < Robot_Parts.size(); i++)
+		for (i = 0; i < Robot_Parts.size(); i++)
 		{
-			cout << i << "\t" << Robot_Parts[i-1].r_name << "\t" << Robot_Parts[i-1].r_price << "\t" << Robot_Parts[i-1].description << endl;
+			cout << i+1 << "\t" << Robot_Parts[i].r_name << "\t" << Robot_Parts[i].r_price << "\t" << Robot_Parts[i].description << endl;
 		}
 
 		while (flag == 0)
@@ -285,23 +326,38 @@ vector <Orders> Order_Details;
 			{
 				cout << "Serial Number of Robot: " << endl;
 				cin >> model;
+				model--;
+				cout << "Name of Head: " << Details[model].head_name << endl;
+				cout << "Type of Head: " << Details[model].head_type << endl;
+				cout << "Weight of Head: " << Details[model].head_weight << endl;
+				cout << "Part No. of Head: " << Details[model].head_partno << endl;
 
-				cout << "Name of Head: " << Details[model-1].head_name << endl;
+				cout << "Name of Torso: " << Details[model].torso_name << endl;
+				cout << "Type of Torso: " << Details[model].torso_type << endl;
+				cout << "Weight of Torso: " << Details[model].torso_weight << endl;
+				cout << "Part No. of Torso: " << Details[model].torso_partno << endl;
+				cout << "No of Compartments in Torso : " << Details[model].compartments << endl;
 
-				cout << "Name of Torso: " << Details[model-1].torso_name << endl;
-				cout << "No of Battery Compartments in Torso : " << Details[model+1].compartments << endl;
+				cout << "Name of Locomoter: " << Details[model].locomoter_name << endl;
+				cout << "Type of Locomoter: " << Details[model].locomoter_type << endl;
+				cout << "Weight of Locomoter: " << Details[model].locomoter_weight << endl;
+				cout << "Part No. of Locomoter: " << Details[model].locomoter_partno << endl;
+				cout << "Max Speed of Locomoter: " << Details[model].max_speed << endl;
+				cout << "Power Consumed by Locomoter : " << Details[model].power_consumed << endl;
 
-				cout << "Name of Locomoter: " << Details[model-1].locomoter_name << endl;
-				cout << "Max Speed of Locomoter: " << Details[model-1].max_speed << endl;
-				cout << "Power Consumed by Locomoter : " << Details[model-1].power_consumed << endl;
+				cout << "Name of Battery: " << Details[model].battery_name << endl;
+				cout << "Type of Battery: " << Details[model].battery_type << endl;
+				cout << "Weight of Battery: " << Details[model].battery_weight << endl;
+				cout << "Part No. of Battery: " << Details[model].battery_partno << endl;
+				cout << "Max Power of Battery : " << Details[model].max_power << endl;
+				cout << "Energy of Battery : " << Details[model].energy << endl;
 
-				cout << "Name of Arms: " << Details[model-1].arms_name << endl;
-				cout << "No of arms : " << Details[model-1].no_of_arms << endl;
-				cout << "Power Consumed by Arm : " << Details[model-1].arms_power << endl;
-
-				cout << "Name of Battery: " << Details[model-1].battery_name << endl;
-				cout << "Max Power of Battery : " << Details[model-1].max_power << endl;
-				cout << "Energy of Battery : " << Details[model-1].energy << endl;
+				cout << "Name of Arms: " << Details[model].arms_name << endl;
+				cout << "Type of Arms: " << Details[model].arms_type << endl;
+				cout << "Weight of Arms: " << Details[model].arms_weight << endl;
+				cout << "Part No. of Arms: " << Details[model].arms_partno << endl;
+				cout << "No of arms : " << Details[model].no_of_arms << endl;
+				cout << "Power Consumed by Arm : " << Details[model].arms_power << endl;
 			}
 			else
 			{
@@ -497,6 +553,7 @@ class Controller
 				cout << "4. Boss\n";
 				cout << "5. Help Me\n";
 				cout << "0. To exit \n";
+				cout << "9. TEST CASE \n";
 				cin >> ch;
 				switch (ch)
 				{
@@ -600,6 +657,46 @@ class Controller
 				case 0:
 					cout << "Thank you for using the system \n";
 					flag = 1;
+					break;
+				case 9:
+					R.r_name = "optimus";
+					R.r_no = "101";
+					R.l_cost=100;
+					R.t_cost=100;
+					R.a_cost=100;
+					R.b_cost=100;
+					R.h_cost=100;
+					R.r_cost = R.a_cost + R.l_cost + R.t_cost + R.h_cost + R.b_cost;
+					R.r_price = 800;
+					R.r_profit = R.r_price-R.r_cost;
+					R.description = "autobot";
+					DC.head_name = "op_head";
+					DC.head_type = "head";
+					DC.head_cost = 100;
+					DC.head_weight = 100;
+					DC.head_partno = "1";
+					DC.torso_name = "op_torso";
+					DC.torso_type = "torso";
+					DC.torso_cost = 100;
+					DC.torso_weight = 100;
+					DC.torso_partno = "1";
+					DC.arms_name = "op_arms";
+					DC.arms_type = "arms";
+					DC.arms_cost = 100;
+					DC.arms_weight = 100;
+					DC.arms_partno = "1";
+					DC.battery_name = "op_battery";
+					DC.battery_type = "battery";
+					DC.battery_cost = 100;
+					DC.battery_weight = 100;
+					DC.battery_partno = "1";
+					DC.locomoter_name = "op_loco";
+					DC.locomoter_type = "loco";
+					DC.locomoter_cost = 100;
+					DC.locomoter_weight = 100;
+					DC.locomoter_partno = "1";
+					Robot_Parts.push_back(R);
+					Details.push_back(DC);
 					break;
 				default:
 					cout << "Please enter a valid choice or select Help for deatailed explanation\n";
@@ -742,17 +839,42 @@ class Controller
 
 				// write data to Catalog_data
 				write_Catalog << Details[i].head_name << endl;
+				write_Catalog << Details[i].head_type << endl;
+				write_Catalog << Details[i].head_cost << endl;
+				write_Catalog << Details[i].head_weight << endl;
+				write_Catalog << Details[i].head_partno << endl;
+
 				write_Catalog << Details[i].torso_name << endl;
+				write_Catalog << Details[i].torso_type << endl;
+				write_Catalog << Details[i].torso_cost << endl;
+				write_Catalog << Details[i].torso_weight << endl;
+				write_Catalog << Details[i].torso_partno << endl;
 				write_Catalog << Details[i].compartments << endl;
+
 				write_Catalog << Details[i].locomoter_name << endl;
+				write_Catalog << Details[i].locomoter_type << endl;
+				write_Catalog << Details[i].locomoter_cost << endl;
+				write_Catalog << Details[i].locomoter_weight << endl;
+				write_Catalog << Details[i].locomoter_partno << endl;
 				write_Catalog << Details[i].max_speed << endl;
 				write_Catalog << Details[i].power_consumed << endl;
+
 				write_Catalog << Details[i].battery_name << endl;
+				write_Catalog << Details[i].battery_type << endl;
+				write_Catalog << Details[i].battery_cost << endl;
+				write_Catalog << Details[i].battery_weight << endl;
+				write_Catalog << Details[i].battery_partno << endl;
 				write_Catalog << Details[i].max_power << endl;
 				write_Catalog << Details[i].energy << endl;
+
 				write_Catalog << Details[i].arms_name << endl;
+				write_Catalog << Details[i].arms_type << endl;
+				write_Catalog << Details[i].arms_cost << endl;
+				write_Catalog << Details[i].arms_weight << endl;
+				write_Catalog << Details[i].arms_partno << endl;
 				write_Catalog << Details[i].no_of_arms << endl;
 				write_Catalog << Details[i].arms_power << endl;
+
 			}	
 		}
 };
@@ -760,8 +882,7 @@ class Controller
 void main()
 {
 	Controller co;
-	co.read_data();
+	//co.read_data();
 	co.menu();
 	co.write_data();
-	keep_window_open();
 }
