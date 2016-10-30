@@ -249,7 +249,7 @@ vector <Orders> Order_Details;
 		cout << "Enter No. of Robots : ";
 		cin >> O.robots_ordered;
 
-		for (int i = 0; i <= Robot_Parts.size(); i++)
+		for (int i = 0; i < Robot_Parts.size(); i++)
 		{
 			if (O.model_name == Robot_Parts[i].r_name)
 			{
@@ -289,7 +289,7 @@ vector <Orders> Order_Details;
 		cin.ignore();
 		getline(cin, sa_search_name);
 
-		for (int i = 0; i <= Order_Details.size(); i++)
+		for (int i = 0; i < Order_Details.size(); i++)
 		{
 			if (sa_search_name == Order_Details[i].sa_name)
 			{
