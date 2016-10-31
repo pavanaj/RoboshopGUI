@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <std_lib_facilities.h>
+#include "std_lib_facilities.h"
 
 #include "Robot_Parts.h"
 #include "Arms.h"
@@ -659,44 +659,7 @@ class Controller
 					flag = 1;
 					break;
 				case 9:
-					R.r_name = "optimus";
-					R.r_no = "101";
-					R.l_cost=100;
-					R.t_cost=100;
-					R.a_cost=100;
-					R.b_cost=100;
-					R.h_cost=100;
-					R.r_cost = R.a_cost + R.l_cost + R.t_cost + R.h_cost + R.b_cost;
-					R.r_price = 800;
-					R.r_profit = R.r_price-R.r_cost;
-					R.description = "autobot";
-					DC.head_name = "op_head";
-					DC.head_type = "head";
-					DC.head_cost = 100;
-					DC.head_weight = 100;
-					DC.head_partno = "1";
-					DC.torso_name = "op_torso";
-					DC.torso_type = "torso";
-					DC.torso_cost = 100;
-					DC.torso_weight = 100;
-					DC.torso_partno = "1";
-					DC.arms_name = "op_arms";
-					DC.arms_type = "arms";
-					DC.arms_cost = 100;
-					DC.arms_weight = 100;
-					DC.arms_partno = "1";
-					DC.battery_name = "op_battery";
-					DC.battery_type = "battery";
-					DC.battery_cost = 100;
-					DC.battery_weight = 100;
-					DC.battery_partno = "1";
-					DC.locomoter_name = "op_loco";
-					DC.locomoter_type = "loco";
-					DC.locomoter_cost = 100;
-					DC.locomoter_weight = 100;
-					DC.locomoter_partno = "1";
-					Robot_Parts.push_back(R);
-					Details.push_back(DC);
+					test_case();
 					break;
 				default:
 					cout << "Please enter a valid choice or select Help for deatailed explanation\n";
@@ -738,9 +701,12 @@ class Controller
 
 		void read_data()
 		{
-			ifstream read_Orders{"Orders_data.txt"};
-			ifstream read_RobotParts{"RobotParts_data.txt"};
-			ifstream read_Catalog{"Catalog_data.txt"};
+			ifstream read_Orders;
+			read_Orders.open("Orders_data.txt");
+			ifstream read_RobotParts;
+			read_RobotParts.open("RobotParts_data.txt");
+			ifstream read_Catalog;
+			read_Catalog.open("Catalog_data.txt");
 			
 			if (read_Orders.fail() || read_RobotParts.fail() || read_Catalog.fail())
 			{
@@ -798,9 +764,12 @@ class Controller
 
 		void write_data()
 		{
-			ofstream write_Orders{"Orders_data.txt"};
-			ofstream write_RobotParts{"RobotParts_data.txt"};
-			ofstream write_Catalog{"Catalog_data.txt"};
+			ofstream write_Orders;
+			write_Orders.open("Orders_data.txt");
+			ofstream write_RobotParts;
+			write_RobotParts.open("RobotParts_data.txt");
+			ofstream write_Catalog;
+			write_Catalog.open("Catalog_data.txt");
 
 			if (write_Orders.fail() || write_RobotParts.fail() || write_Catalog.fail())
 			{
@@ -877,12 +846,61 @@ class Controller
 
 			}	
 		}
+void test_case()
+		{
+			R.r_name = "optimus";
+			R.r_no = "101";
+			R.l_cost = 100;
+			R.t_cost = 100;
+			R.a_cost = 100;
+			R.b_cost = 100;
+			R.h_cost = 100;
+			R.r_cost = R.a_cost + R.l_cost + R.t_cost + R.h_cost + R.b_cost;
+			R.r_price = 800;
+			R.r_profit = R.r_price - R.r_cost;
+			R.description = "autobot";
+			DC.head_name = "op_head";
+			DC.head_type = "head";
+			DC.head_cost = 100;
+			DC.head_weight = 100;
+			DC.head_partno = "1";
+			DC.torso_name = "op_torso";
+			DC.torso_type = "torso";
+			DC.torso_cost = 100;
+			DC.torso_weight = 100;
+			DC.torso_partno = "1";
+			DC.arms_name = "op_arms";
+			DC.arms_type = "arms";
+			DC.arms_cost = 100;
+			DC.arms_weight = 100;
+			DC.arms_partno = "1";
+			DC.battery_name = "op_battery";
+			DC.battery_type = "battery";
+			DC.battery_cost = 100;
+			DC.battery_weight = 100;
+			DC.battery_partno = "1";
+			DC.locomoter_name = "op_loco";
+			DC.locomoter_type = "loco";
+			DC.locomoter_cost = 100;
+			DC.locomoter_weight = 100;
+			DC.locomoter_partno = "1";
+			DC.compartments = 4;
+			DC.max_speed = 100;
+			DC.power_consumed = 100;
+			DC.max_power = 100;
+			DC.energy = 100;
+			DC.no_of_arms = 2;
+			DC.arms_power = 100;
+			Robot_Parts.push_back(R);
+			Details.push_back(DC);
+		}
 };
 
-void main()
+int main()
 {
 	Controller co;
 	//co.read_data();
 	co.menu();
 	co.write_data();
+	return 0;
 }
