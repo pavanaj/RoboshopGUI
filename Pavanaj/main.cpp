@@ -1,5 +1,7 @@
-#include <iostream>
-#include <fstream>
+#include "iostream"
+#include "fstream"
+#include "istream"
+#include "ostream"
 #include "std_lib_facilities.h"
 
 #include "Robot_Parts.h"
@@ -720,6 +722,7 @@ class Controller
 				getline(read_Orders, O.cust_no);
 				getline(read_Orders, O.cust_name);
 				read_Orders >> O.robots_ordered;
+				//ignore
 				getline(read_Orders, O.sa_name);
 				getline(read_Orders, O.sales_date);
 				getline(read_Orders, O.model_name);
@@ -729,12 +732,12 @@ class Controller
 				read_Orders >> O.net_total;
 				Order_Details.push_back(O);
 			}
-			while (!read_RobotParts.eof())
+			while (!read_RobotParts.eof())// good() 
 			{
 				// read contents of Robot Parts
 				getline(read_RobotParts, R.r_name);
 				getline(read_RobotParts, R.r_no);
-				read_RobotParts>>R.r_cost;
+				read_RobotParts >> R.r_cost;
 				read_RobotParts >> R.r_price;
 				read_RobotParts >> R.r_profit;
 				read_RobotParts >> R.l_cost;
@@ -745,6 +748,9 @@ class Controller
 				getline(read_RobotParts, R.description);
 				Robot_Parts.push_back(R);
 
+			}
+			while (!read_Catalog.eof())// good() 
+			{
 				// read contents of detailed catalog
 				getline(read_Catalog, DC.head_name);
 				getline(read_Catalog, DC.torso_name);
