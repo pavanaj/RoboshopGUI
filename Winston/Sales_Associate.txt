@@ -1,5 +1,45 @@
-void Sales_Associate::Place_Order()
+//GUI widgets
+
+#include <FL/Fl.H>
+#include <FL/Fl_Window.H>
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Box.H>
+#include <FL/Fl_Menu_Bar.H>
+#include <FL/Fl_Menu_Button.H>
+#include <FL/Fl_JPEG_Image.H>
+#include <FL/Fl_Shared_Image.H>
+#include <FL/Fl_Widget.H>
+#include <FL/Fl_Text_Display.H>
+#include <FL/fl_ask.h>
+#include <cctype>
+
+//CREATE WIDGET POINTERS
+
+Fl_Window *order_dialog;
+Fl_Window *bill_dialog;
+Fl_Window *SAreport_dialog;
+
+void View::draw()
 {
+	Fl_Box::draw();
+}
+bool View::saved()
+{
+	return dirty;
+}
+
+//CREATE ORDER DIALOG
+void Sales_Associate::OrderCB(Fl_Widget* w, void* p)
+{
+	
+	const char *s = "Enter Line Width";
+	const char *d = "0";
+	const char *a = fl_input(s, d);
+	if (isdigit(*a))
+	{
+		view->set_width(atoi(a));
+	}
+
 	cout << "Enter Order No : ";
 	cin>>O.order_no;
 
@@ -17,7 +57,7 @@ void Sales_Associate::Place_Order()
 	cout << "Enter Order's date : ";
 	cin.ignore();
 	getline(cin, O.sales_date);
-
+	
 	cout << "Enter Model Name : ";
 	cin.ignore();
 	getline(cin, O.model_name);
@@ -38,8 +78,13 @@ void Sales_Associate::Place_Order()
 
 }
 
-void Sales_Associate::Print()
+void Sales_Associate::BillCB()
 {
+	//CREATE PRINT BILL DIALOG
+	bill_dialog = new Fl_Window(720,480,"Print Bill of Sale");
+	win->color(FL_WHITE);
+	view = new View (0, 0, 720, 480);
+
 	cout << "Order number: " << O.order_no << endl;
 	cout << "Customer number: " << O.cust_no << endl;
 	cout << "Your sales associate: " << O.sa_name << endl;
@@ -56,8 +101,13 @@ void Sales_Associate::Print()
 
 }
 
-void Sales_Associate::Report()
+void Sales_Associate::SAReportCB()
 {
+	//CREATE PRINT SALES REPORT DIALOG
+	SAreport_dialog = new Fl_Window(720,480,"Print Sales Report");
+	win->color(FL_WHITE);
+	view = new View (0, 0, 720, 480);
+
 	string sa_search_name;
 	double sales_total = 0;
 	

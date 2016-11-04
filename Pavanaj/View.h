@@ -1,7 +1,7 @@
 #ifndef __VIEW_H
 #define __VIEW_H
 #include <FL/Fl.H>
-#include <Fl/Fl_Box.H>
+#include <FL/Fl_Box.H>
 
 class View : public Fl_Box
 {
