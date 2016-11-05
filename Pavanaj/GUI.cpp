@@ -1,27 +1,28 @@
 // standard io headers
-//#include "iostream.h"
-//#include "fstream.h"
-//#include "istream.h"
-//#include "ostream.h"
+#include <iostream>
+#include <fstream>
 #include "std_lib_facilities.h"
+#include <string>
+#include <sstream>
 using namespace std;
 
 // interfaces 
-#include "Robot_Parts.h"
-#include "Arms.h"
-#include "Battery.h"
-#include "Boss.h"
-#include "Customer.h"
-#include "Head.h"
-#include "Locomoter.h"
-#include "Product_Manager.h"
-#include "Sales_Associate.h"
-#include "Torso.h"
+//#include "Robot_Parts.h"
+//#include "Arms.h"
+//#include "Battery.h"
+//#include "Boss.h"
+//#include "Customer.h"
+//#include "Head.h"
+//#include "Locomoter.h"
+//#include "Product_Manager.h"
+//#include "Sales_Associate.h"
+//#include "Torso.h"
+
 #include "View.h"
 
 // GUI Widgets
 #include <FL/Fl.H>
-#include <Fl/Fl_Window.H>
+#include <FL/Fl_Window.H>
 #include <Fl/Fl_Button.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Menu_Bar.H>
@@ -31,32 +32,22 @@ using namespace std;
 #include <Fl/Fl_Widget.H>
 #include <FL/Fl_Text_Display.H>
 #include <Fl/fl_ask.H>
+#include <FL/Fl_Input.H>
+#include <FL/Fl_Output.H>
 #include <cctype>
-
 
 Fl_Window *win;
 Fl_Menu_Bar *menubar;
 View *view;
 
-struct Robots
+struct Robot
 {
-  string r_name;
-  string r_no;
-  double r_cost;
-  double r_price;
-  double r_profit;
-  double l_cost;
-  double t_cost;
-  double a_cost;
-  double b_cost;
-  double h_cost;
-  string description;
-}R;
-
-vector <Robots> Robot_Parts;
-
-struct Detailed_Catalog
-{
+	string r_name;
+	string r_no;
+	string description;
+	double r_cost;
+	double r_price;
+	double r_profit;
 	string head_name;
 	string head_type;
 	double head_cost;
@@ -89,11 +80,11 @@ struct Detailed_Catalog
 	string arms_partno;
 	int no_of_arms;
 	double arms_power;
-}DC;
+}R;
 
-vector <Detailed_Catalog> Details;
+vector <Robot> Robots;
 
-struct Orders
+struct Order
 {
     string order_no;
     string cust_no;
@@ -109,305 +100,151 @@ struct Orders
 
 }O;
 
-vector <Orders> Order_Details;
+vector <Order> Orders;
 
-	double Robot_Parts::input()
-	{
-		
-		return cost;
-	}
-
-	void Torso::t_input()
-	{
-
-	}
-
-	void Arms::a_input()
-	{
-		
-	}
-
-	void Battery::b_input()
-	{
-		
-	}
-
-	void Locomoter::l_input()
-	{
-		
-	}
-
-	void Product_Manager::pm_input()
-	{
-		
-	}
-
-	void Product_Manager::Create_Robo_Part()
-	{
-		
-	}
-
-	double Product_Manager::Calc_Cost()
-	{
-		cost = R.h_cost + R.t_cost + R.a_cost + R.b_cost + R.l_cost;
-		return cost;
-	}
-
-	double Product_Manager::Calc_Profit()
-	{
-	
-	}
-
-	void Sales_Associate::Place_Order()
-	{
-		O.shipping = O.sub_total*0.10;
-		O.tax = O.sub_total*.0825;
-		O.net_total = O.sub_total + O.shipping + O.tax;
-	}
-
-	void Sales_Associate::Print()
-	{
-
-	}
-
-	void Sales_Associate::Report()
-	{
-	
-	}
-
-	void Customer::Catalog()
-	{
-	}
-
-	void Customer::Orders()
-	{
-	}
-
-	void Customer::Bill()
-	{
-	}
-
-	void Boss::Sales_Report()
-	{
-
-	}
-
-	void Boss::Print_Orders()
-	{
-
-	}
-
-	void Boss::Profit()
-	{
-
-	}
-
-	void Boss::Models_Sold()
-	{
-
-	}
-	
-class Controller
+void EnterCB(Fl_Widget* w, void* p)
 {
-	public:
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(0);
+	R.r_no = temp->value();
+	temp = (Fl_Input*)b->parent()->child(1);
+	R.r_name = temp->value();
+	temp = (Fl_Input*)b->parent()->child(2);
+	R.description = temp->value();
+	temp = (Fl_Input*)b->parent()->child(3);
+	R.head_partno = temp->value();
+	temp = (Fl_Input*)b->parent()->child(4);
+	R.head_name = temp->value();
+	temp = (Fl_Input*)b->parent()->child(5);
+	R.head_type = temp->value();
+	temp = (Fl_Input*)b->parent()->child(6);
+	R.head_cost = temp->value();
+	temp = (Fl_Input*)b->parent()->child(7);
+	R.head_weight = temp->value();
+	temp = (Fl_Input*)b->parent()->child(8);
+	R.torso_partno = temp->value();
+	temp = (Fl_Input*)b->parent()->child(9);
+	R.torso_name = temp->value();
+	temp = (Fl_Input*)b->parent()->child(10);
+	R.torso_type = temp->value();
+	temp = (Fl_Input*)b->parent()->child(11);
+	R.torso_cost = temp->value();
+	temp = (Fl_Input*)b->parent()->child(12);
+	R.torso_weight = temp->value();
+	temp = (Fl_Input*)b->parent()->child(13);
+	R.compartments = temp->value();
+	temp = (Fl_Input*)b->parent()->child(14);
+	R.locomoter_partno = temp->value();
+	temp = (Fl_Input*)b->parent()->child(15);
+	R.locomoter_name = temp->value();
+	temp = (Fl_Input*)b->parent()->child(16);
+	R.locomoter_type = temp->value();
+	temp = (Fl_Input*)b->parent()->child(17);
+	R.locomoter_cost = temp->value();
+	temp = (Fl_Input*)b->parent()->child(18);
+	R.locomoter_weight = temp->value();
+	temp = (Fl_Input*)b->parent()->child(19);
+	R.max_speed = temp->value();
+	temp = (Fl_Input*)b->parent()->child(20);
+	R.power_consumed = temp->value();
+	temp = (Fl_Input*)b->parent()->child(21);
+	R.battery_partno = temp->value();
+	temp = (Fl_Input*)b->parent()->child(22);
+	R.battery_name = temp->value();
+	temp = (Fl_Input*)b->parent()->child(23);
+	R.battery_type = temp->value();
+	temp = (Fl_Input*)b->parent()->child(24);
+	R.battery_cost = temp->value();
+	temp = (Fl_Input*)b->parent()->child(25);
+	R.battery_weight = temp->value();
+	temp = (Fl_Input*)b->parent()->child(26);
+	R.max_power = temp->value();
+	temp = (Fl_Input*)b->parent()->child(27);
+	R.energy = temp->value();
+	temp = (Fl_Input*)b->parent()->child(28);
+	R.arms_partno = temp->value();
+	temp = (Fl_Input*)b->parent()->child(29);
+	R.arms_name = temp->value();
+	temp = (Fl_Input*)b->parent()->child(30);
+	R.arms_type = temp->value();
+	temp = (Fl_Input*)b->parent()->child(31);
+	R.arms_cost = temp->value();
+	temp = (Fl_Input*)b->parent()->child(32);
+	R.arms_weight = temp->value();
+	temp = (Fl_Input*)b->parent()->child(33);
+	R.arms_power = temp->value();
+	temp = (Fl_Input*)b->parent()->child(34);
+	R.no_of_arms = temp->value();
+
+	Robots.push_back(R);
+}
+
+void RoboPartsCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CRP = new Fl_Window(1280,720);
+
+	Fl_Input *modelno = new Fl_Input(150,50,100,30,"Model Number : "); //Child 0
+	Fl_Input *modelname = new Fl_Input(450,50,100,30, "Model Name : "); //Child 1
+	Fl_Input *description = new Fl_Input(750,50,200,30, "Description : ");//Child 2
+
+	Fl_Input *headpartno = new Fl_Input(150, 100, 100, 30, "Head PartNo : ");//Child 3
+	Fl_Input *headname = new Fl_Input(450, 100, 100, 30, "Head Name : ");//Child 4
+	Fl_Input *headtype = new Fl_Input(150, 150, 100, 30, "Head Type : ");//Child 5
+	Fl_Input *headcost = new Fl_Input(450, 150, 100, 30, "Head Cost : ");//Child 6
+	Fl_Input *headweight = new Fl_Input(150, 200, 100, 30, "Head Weight : ");//Child 7
+
+	Fl_Input *torsopartno = new Fl_Input(750, 100, 100, 30, "Torso PartNo : ");//Child 8
+	Fl_Input *torsoname = new Fl_Input(1050, 100, 100, 30, "Torso Name : ");//Child 9
+	Fl_Input *torsotype = new Fl_Input(750, 150, 100, 30, "Torso Type : ");//Child 10
+	Fl_Input *torsocost = new Fl_Input(1050, 150, 100, 30, "Torso Cost : "); //Child 11
+	Fl_Input *torsoweight = new Fl_Input(750, 200, 100, 30, "Torso Weight : ");//Child 12
+	Fl_Input *compartments = new Fl_Input(1050, 200, 100, 30, "Torso Compartments : ");//Child 13
+
+	Fl_Input *locomoterpartno = new Fl_Input(150, 250, 100, 30, "Locomoter PartNo : ");//Child 14
+	Fl_Input *locomotername = new Fl_Input(450, 250, 100, 30, "Locomoter Name : ");//Child 15
+	Fl_Input *locomotertype = new Fl_Input(150, 300, 100, 30, "Locomoter Type : ");//Child 16
+	Fl_Input *locomotercost = new Fl_Input(450, 300, 100, 30, "Locomoter Cost : ");//Child 17
+	Fl_Input *locomoterweight = new Fl_Input(150, 350, 100, 30, "Locomoter Weight : ");//Child 18
+	Fl_Input *maxspeed = new Fl_Input(450, 350, 100, 30, "Locomoter MaxSpeed : ");//Child 19
+	Fl_Input *power_consumed = new Fl_Input(450, 400, 100, 30, "Locomoter PowerConsumed : ");//Child 20
+
+	Fl_Input *batterypartno = new Fl_Input(750, 250, 100, 30, "Battery PartNo : ");//Child 21
+	Fl_Input *batteryname = new Fl_Input(1050, 250, 100, 30, "Battery Name : ");//Child 22
+	Fl_Input *batterytype = new Fl_Input(750, 300, 100, 30, "Battery Type : ");//Child 23
+	Fl_Input *batterycost = new Fl_Input(1050, 300, 100, 30, "Battery Cost : ");//Child 24
+	Fl_Input *batteryweight = new Fl_Input(750, 350, 100, 30, "Battery Weight : ");//Child 25
+	Fl_Input *maxpower = new Fl_Input(1050, 350, 100, 30, "Battery MaxPower : ");//Child 26
+	Fl_Input *energy = new Fl_Input(750, 400, 100, 30, "Battery Energy : ");//Child 27
+
+	Fl_Input *armspartno = new Fl_Input(150, 450, 100, 30, "Arms PartNo : ");//Child 28
+	Fl_Input *armsname = new Fl_Input(450, 450, 100, 30, "Arms Name : ");//Child 29
+	Fl_Input *armstype = new Fl_Input(150, 500, 100, 30, "Arms Type : ");//Child 30
+	Fl_Input *armscost = new Fl_Input(450, 500, 100, 30, "Arms Cost : ");//Child 31
+	Fl_Input *armsweight = new Fl_Input(150, 550, 100, 30, "Arms Weight : "); //Child 32
+	Fl_Input *armspower = new Fl_Input(450, 550, 100, 30, "Arms Power : ");//Child 33
+	Fl_Input *noofarms = new Fl_Input(150, 600, 100, 30, "Arms Number : ");//Child 34
+
+	Fl_Button *Enter = new Fl_Button(525, 625, 80, 50, "ENTER");
+	Enter->callback(EnterCB);
 	
-		//void read_data()
-		//{
-		//	ifstream read_Orders;
-		//	read_Orders.open("Orders_data.txt");
-		//	ifstream read_RobotParts;
-		//	read_RobotParts.open("RobotParts_data.txt");
-		//	ifstream read_Catalog;
-		//	read_Catalog.open("Catalog_data.txt");
-		//	
-		//	if (read_Orders.fail() || read_RobotParts.fail() || read_Catalog.fail())
-		//	{
-		//		cerr << "Error opening File";
-		//	}
+	CRP->show();
+	view->redraw();
+}
 
-		//	while (!read_Orders.eof())
-		//	{
-		//		// read data from Orders_data
-		//		getline(read_Orders, O.order_no);
-		//		getline(read_Orders, O.cust_no);
-		//		getline(read_Orders, O.cust_name);
-		//		read_Orders >> O.robots_ordered;
-		//		getline(read_Orders, O.sa_name);
-		//		getline(read_Orders, O.sales_date);
-		//		getline(read_Orders, O.model_name);
-		//		read_Orders >> O.sub_total;
-		//		read_Orders >> O.shipping;
-		//		read_Orders >> O.tax;
-		//		read_Orders >> O.net_total;
-		//		Order_Details.push_back(O);
-		//	}
-		//	while (!read_RobotParts.eof())
-		//	{
-		//		// read contents of Robot Parts
-		//		getline(read_RobotParts, R.r_name);
-		//		getline(read_RobotParts, R.r_no);
-		//		read_RobotParts>>R.r_cost;
-		//		read_RobotParts >> R.r_price;
-		//		read_RobotParts >> R.r_profit;
-		//		read_RobotParts >> R.l_cost;
-		//		read_RobotParts >> R.t_cost;
-		//		read_RobotParts >> R.a_cost;
-		//		read_RobotParts >> R.b_cost;
-		//		read_RobotParts >> R.h_cost;
-		//		getline(read_RobotParts, R.description);
-		//		Robot_Parts.push_back(R);
-
-		//		// read contents of detailed catalog
-		//		getline(read_Catalog, DC.head_name);
-		//		getline(read_Catalog, DC.torso_name);
-		//		read_Catalog >> DC.compartments;
-		//		getline(read_Catalog, DC.locomoter_name);
-		//		read_Catalog >> DC.max_speed;
-		//		read_Catalog >> DC.power_consumed;
-		//		getline(read_Catalog, DC.battery_name);
-		//		read_Catalog >> DC.max_power;
-		//		read_Catalog >> DC.energy;
-		//		getline(read_Catalog, DC.arms_name);
-		//		read_Catalog >> DC.no_of_arms; 
-		//		read_Catalog >> DC.arms_power;
-		//		Details.push_back(DC);
-		//	}
-		//}
-
-		//void write_data()
-		//{
-		//	ofstream write_Orders;
-		//	write_Orders.open("Orders_data.txt");
-		//	ofstream write_RobotParts;
-		//	write_RobotParts.open("RobotParts_data.txt");
-		//	ofstream write_Catalog;
-		//	write_Catalog.open("Catalog_data.txt");
-
-		//	if (write_Orders.fail() || write_RobotParts.fail() || write_Catalog.fail())
-		//	{
-		//		cerr << "Error opening File";
-		//	}
-
-		//	for(int i=0;i<Order_Details.size();i++)
-		//	{
-		//		//write data to Orders_data
-		//		write_Orders << Order_Details[i].order_no << endl;
-		//		write_Orders << Order_Details[i].cust_no << endl;
-		//		write_Orders << Order_Details[i].cust_name << endl;
-		//		write_Orders << Order_Details[i].robots_ordered << endl;
-		//		write_Orders << Order_Details[i].sa_name << endl;
-		//		write_Orders << Order_Details[i].sales_date << endl;
-		//		write_Orders << Order_Details[i].model_name << endl;
-		//		write_Orders << Order_Details[i].sub_total << endl;
-		//		write_Orders << Order_Details[i].shipping << endl;
-		//		write_Orders << Order_Details[i].tax << endl;
-		//		write_Orders << Order_Details[i].net_total << endl;
-		//	}
-		//	for (int i = 0; i<Robot_Parts.size(); i++)
-		//	{
-		//		// write data to RobotParts_data
-		//		write_RobotParts << Robot_Parts[i].r_name << endl;
-		//		write_RobotParts << Robot_Parts[i].r_no << endl;
-		//		write_RobotParts << Robot_Parts[i].r_cost << endl;
-		//		write_RobotParts << Robot_Parts[i].r_price << endl;
-		//		write_RobotParts << Robot_Parts[i].r_profit << endl;
-		//		write_RobotParts << Robot_Parts[i].l_cost << endl;
-		//		write_RobotParts << Robot_Parts[i].t_cost << endl;
-		//		write_RobotParts << Robot_Parts[i].a_cost << endl;
-		//		write_RobotParts << Robot_Parts[i].b_cost << endl;
-		//		write_RobotParts << Robot_Parts[i].h_cost << endl;
-		//		write_RobotParts << Robot_Parts[i].description << endl;
-
-		//		// write data to Catalog_data
-		//		write_Catalog << Details[i].head_name << endl;
-		//		write_Catalog << Details[i].head_type << endl;
-		//		write_Catalog << Details[i].head_cost << endl;
-		//		write_Catalog << Details[i].head_weight << endl;
-		//		write_Catalog << Details[i].head_partno << endl;
-
-		//		write_Catalog << Details[i].torso_name << endl;
-		//		write_Catalog << Details[i].torso_type << endl;
-		//		write_Catalog << Details[i].torso_cost << endl;
-		//		write_Catalog << Details[i].torso_weight << endl;
-		//		write_Catalog << Details[i].torso_partno << endl;
-		//		write_Catalog << Details[i].compartments << endl;
-		//		write_Catalog << Details[i].locomoter_name << endl;
-		//		write_Catalog << Details[i].locomoter_type << endl;
-		//		write_Catalog << Details[i].locomoter_cost << endl;
-		//		write_Catalog << Details[i].locomoter_weight << endl;
-		//		write_Catalog << Details[i].locomoter_partno << endl;
-		//		write_Catalog << Details[i].max_speed << endl;
-		//		write_Catalog << Details[i].power_consumed << endl;
-		//		write_Catalog << Details[i].battery_name << endl;
-		//		write_Catalog << Details[i].battery_type << endl;
-		//		write_Catalog << Details[i].battery_cost << endl;
-		//		write_Catalog << Details[i].battery_weight << endl;
-		//		write_Catalog << Details[i].battery_partno << endl;
-		//		write_Catalog << Details[i].max_power << endl;
-		//		write_Catalog << Details[i].energy << endl;
-		//		write_Catalog << Details[i].arms_name << endl;
-		//		write_Catalog << Details[i].arms_type << endl;
-		//		write_Catalog << Details[i].arms_cost << endl;
-		//		write_Catalog << Details[i].arms_weight << endl;
-		//		write_Catalog << Details[i].arms_partno << endl;
-		//		write_Catalog << Details[i].no_of_arms << endl;
-		//		write_Catalog << Details[i].arms_power << endl;
-		//	}	
-		//}
-void test_case()
-		{
-			R.r_name = "optimus";
-			R.r_no = "101";
-			R.l_cost = 100;
-			R.t_cost = 100;
-			R.a_cost = 100;
-			R.b_cost = 100;
-			R.h_cost = 100;
-			R.r_cost = R.a_cost + R.l_cost + R.t_cost + R.h_cost + R.b_cost;
-			R.r_price = 800;
-			R.r_profit = R.r_price - R.r_cost;
-			R.description = "autobot";
-			DC.head_name = "op_head";
-			DC.head_type = "head";
-			DC.head_cost = 100;
-			DC.head_weight = 100;
-			DC.head_partno = "1";
-			DC.torso_name = "op_torso";
-			DC.torso_type = "torso";
-			DC.torso_cost = 100;
-			DC.torso_weight = 100;
-			DC.torso_partno = "1";
-			DC.arms_name = "op_arms";
-			DC.arms_type = "arms";
-			DC.arms_cost = 100;
-			DC.arms_weight = 100;
-			DC.arms_partno = "1";
-			DC.battery_name = "op_battery";
-			DC.battery_type = "battery";
-			DC.battery_cost = 100;
-			DC.battery_weight = 100;
-			DC.battery_partno = "1";
-			DC.locomoter_name = "op_loco";
-			DC.locomoter_type = "loco";
-			DC.locomoter_cost = 100;
-			DC.locomoter_weight = 100;
-			DC.locomoter_partno = "1";
-			DC.compartments = 4;
-			DC.max_speed = 100;
-			DC.power_consumed = 100;
-			DC.max_power = 100;
-			DC.energy = 100;
-			DC.no_of_arms = 2;
-			DC.arms_power = 100;
-			Robot_Parts.push_back(R);
-			Details.push_back(DC);
-		}
-};
+double str_to_double(string s)
+	{
+		istringstream is(s);
+		double d;
+		is >> d;
+		return d;
+	}
 
 void View::draw()
 {
 	Fl_Box::draw();
 }
+
 bool View::saved()
 {
 	return dirty;
@@ -418,7 +255,7 @@ void QuitCB(Fl_Widget* w, void* p)
 	int selection = 1;
 	if (!view->saved())
 	{
-		selection = fl_choice("EXIT PAKKA ? ", fl_no, fl_yes, 0);
+		selection = fl_choice("Are You Sure ? ", fl_no, fl_yes, 0);
 	}
 	if (selection == 1)
 	{
@@ -468,13 +305,12 @@ void HelpCB(Fl_Widget* w, void* p)
 	view->redraw();
 }
 
-
 int main()
 {
-	Product_Manager pm;
+	/*Product_Manager pm;
 	Customer c;
 	Sales_Associate sa;
-	Boss b;
+	Boss b;*/
 	// CREATE WINDOW
 	win = new Fl_Window(720,480,"RoboShop");
 	win->color(FL_WHITE);
@@ -488,11 +324,11 @@ int main()
 		{ "Open" },//(Fl_Callback*)OpenCB },
 		{ "Save" },//(Fl_Callback*)SaveCB },
 		{ "Save As" },//(Fl_Callback*)SaveAsCB},
-		{ "Help",FL_ALT + 'h',(Fl_Callback *)HelpCB},
-		{ "Quit",FL_ALT + 'q',(Fl_Callback*)QuitCB},
+		{ "Help",0,(Fl_Callback*)HelpCB},
+		{ "Quit",0,(Fl_Callback*)QuitCB},
 		{ 0 },
 		{ "&Product Manager",0,0,0, FL_SUBMENU },
-		{ "Create RoboParts" },//(Fl_Callback*)RoboPartsCB },
+		{ "Create RoboParts",0,(Fl_Callback*)RoboPartsCB },
 		{ 0 },
 		{ "&Boss",0,0,0, FL_SUBMENU },
 		{ "Sales Report" },//(Fl_Callback*)SalesReportCB },
@@ -516,7 +352,7 @@ int main()
 	};
 	menubar->menu(menuitems);
 
-	win->resizable(*view);
+	win->resizable(*win);
 	win->end();
 	win->show();
 	return (Fl::run());

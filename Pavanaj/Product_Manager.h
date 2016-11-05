@@ -14,10 +14,7 @@ private:
 	double cost;
 	string description;
 public:
-	void pm_input();
-    void Create_Robo_Part();
-    double Calc_Cost();
-    double Calc_Profit();
+  //  void RoboPartsCB(Fl_Widget* w, void* p);
 };
 
 #endif // PRODUCT_MANAGER_H
