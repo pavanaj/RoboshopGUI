@@ -13,3 +13,5 @@ Winston Starling - 1001346251
 
 
 Bit Bucket - https://pavanaj@bitbucket.org/pavanaj/cse-1325-hw-6.git
+
+To execute the program on MinGW the command used is : fltk-config --compile GUI.cpp
