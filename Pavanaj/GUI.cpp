@@ -257,6 +257,145 @@ void RoboPartsCB(Fl_Widget* w, void* p)
 	view->redraw();
 }
 
+void OrdersCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *order = new Fl_Window(900, 550);
+	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+	Fl_Text_Display *display = new Fl_Text_Display(20, 20, 900, 550, "ORDERS");
+	display->buffer(buff);
+	order->resizable(*display);
+	order->show();
+	buff->text("The following is the list of Orders for Robo shop:\n");
+	for (int i = 0; i < Orders.size(); i++)
+	{
+
+		buff->text(Orders[i].order_no);
+		buff->text("\t");
+		buff->text(Orders[i].cust_name);
+		buff->text("\t");
+		string s1 = its(Orders[i].robots_ordered);
+		buff->text(s1);
+		buff->text("\t");
+		buff->text(Orders[i].sa_name);
+		buff->text("\t");
+		buff->text(Orders[i].sales_date);
+		buff->text("\t");
+		buff->text(Orders[i].model_name);
+		buff->text("\t");
+		string s2 = dts(Orders[i].net_total);
+		buff->text(s2);
+	}
+	view->redraw();
+}
+
+void ProfitCB(Fl_Widget* w, void* p)
+{
+	double pft;
+	vector<double> rp;
+	Fl_Window *pt = new Fl_Window(900, 550);
+	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+	Fl_Text_Display *display = new Fl_Text_Display(20, 20, 900, 550, "PROFITS");
+	display->buffer(buff);
+	pt->resizable(*display);
+	pt->show();
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		for (int j = 1; j < Robots.size(); j++)
+		{
+			if (Robots[i].r_name == Robots[j].r_name)
+			{
+				pft = pft + Robots[j].r_profit;
+			}
+			else
+			{
+				pft = Robots[i].r_profit;
+			}
+		}
+		rp.push_back(pft);
+
+		//buff->text(i);
+		buff->text(". Robot Name : ");
+		buff->text(Robots[i].r_name);
+		buff->text(" Total Profit : ");
+		string s = dts(rp[i]);
+		buff->text(s);
+		buff->text("\n");
+	}
+	view->redraw();
+}
+
+void SAReportCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *SAReport_dialog = new Fl_Window(1280, 720);
+
+	Fl_Input *sa_search_name = new Fl_Input(150, 50, 100, 30, “Enter name for your sales report : ”);
+
+	//Based on associate name entered, dialog will display the appropriate
+	//report info
+
+	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+	Fl_Text_Display *display = new Fl_Text_Display(20, 80, 1280, 300, “Sales Report”);
+	display->buffer(buff);
+	buff->text(“Sales report info displays here.”);
+
+	Fl_Button *Enter = new Fl_Button(150, 350, 80, 50, "ENTER");
+	Fl_Button *Cancel = new Fl_Button(235, 380, 80, 50, "CANCEL");
+
+	dialog->end();
+	dialog->set_non_modal();
+
+	dialog->show();
+	view->redraw();
+}
+
+
+void OrderCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *Order_dialog = new Fl_Window(1280, 720);
+
+	Fl_Input *order_no = new Fl_Input(150, 50, 100, 30, “Order Number : ");
+		Fl_Input *sales_name = new Fl_Input(150, 80, 100, 30, “Sales Associate : ”);
+	Fl_Input *cust_no = new Fl_Input(150, 110, 100, 30, “Customer Number : ”);
+	Fl_Input *cust_name = new Fl_Input(150, 140, 100, 30, “Customer Name : ”);
+	Fl_Input *order_date = new Fl_Input(150, 170, 100, 30, “Order date : ”);
+	Fl_Input *model_name = new Fl_Input(150, 200, 100, 30, “Model Name : ”);
+	Fl_Input *robot_no = new Fl_Input(150, 230, 100, 30, “Number of Robots : ”);
+
+	Fl_Button *Enter = new Fl_Button(150, 260, 80, 50, "ENTER");
+	Fl_Button *Cancel = new Fl_Button(235, 260, 80, 50, "CANCEL");
+
+	dialog->end();
+	dialog->set_non_modal();
+
+	dialog->show();
+	view->redraw();
+
+}
+
+
+void BillCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *Bill_dialog = new Fl_Window(1280, 720);
+
+	Fl_Input *bill_search_no = new Fl_Input(150, 50, 100, 30, “Enter bill number : ”);
+
+	//Based on bill number entered, dialog will display the appropriate
+	//bill info
+
+	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+	Fl_Text_Display *display = new Fl_Text_Display(20, 80, 1280, 300, “Bill Information”);
+	display->buffer(buff);
+	buff->text(“Bill info displays here.”);
+
+	Fl_Button *Enter = new Fl_Button(150, 350, 80, 50, "ENTER");
+	Fl_Button *Cancel = new Fl_Button(235, 380, 80, 50, "CANCEL");
+
+	dialog->end();
+	dialog->set_non_modal();
+
+	dialog->show();
+	view->redraw();
+}
 void View::draw()
 {
 	Fl_Box::draw();
@@ -349,9 +488,9 @@ int main()
 		{ 0 },
 		{ "&Boss",0,0,0, FL_SUBMENU },
 		{ "Sales Report" },//(Fl_Callback*)SalesReportCB },
-		{ "View Orders" },//(Fl_Callback*)OrdersCB },
+		{ "View Orders","0",(Fl_Callback*)OrdersCB },
 		{ "Model Sales" },//(Fl_Callback*)ModelSalesCB },
-		{ "Models Profit"},//(Fl_Callback*)ProfitCB},
+		{ "Models Profit","0",(Fl_Callback*)ProfitCB},
 		{ "Create Customer" },//(Fl_Callback*)CreateCustomerCB },
 		{ "Create Sales Associate" },//(Fl_Callback*)CreateSACB },
 		{ 0 },
