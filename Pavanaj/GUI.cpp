@@ -102,10 +102,19 @@ struct Order
 
 vector <Order> Orders;
 
+double str_to_double(string s)
+{
+	istringstream is(s);
+	double d;
+	is >> d;
+	return d;
+}
+
 void EnterCB(Fl_Widget* w, void* p)
 {
 	Fl_Button* b = (Fl_Button*)w;
 	Fl_Input* temp;
+	string s;
 	temp = (Fl_Input*)b->parent()->child(0);
 	R.r_no = temp->value();
 	temp = (Fl_Input*)b->parent()->child(1);
@@ -119,9 +128,11 @@ void EnterCB(Fl_Widget* w, void* p)
 	temp = (Fl_Input*)b->parent()->child(5);
 	R.head_type = temp->value();
 	temp = (Fl_Input*)b->parent()->child(6);
-	R.head_cost = temp->value();
+	s = temp->value();
+	R.head_cost = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(7);
-	R.head_weight = temp->value();
+	s = temp->value();
+	R.head_weight = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(8);
 	R.torso_partno = temp->value();
 	temp = (Fl_Input*)b->parent()->child(9);
@@ -129,11 +140,14 @@ void EnterCB(Fl_Widget* w, void* p)
 	temp = (Fl_Input*)b->parent()->child(10);
 	R.torso_type = temp->value();
 	temp = (Fl_Input*)b->parent()->child(11);
-	R.torso_cost = temp->value();
+	s = temp->value();
+	R.torso_cost = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(12);
-	R.torso_weight = temp->value();
+	s = temp->value();
+	R.torso_weight = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(13);
-	R.compartments = temp->value();
+	s = temp->value();
+	R.compartments = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(14);
 	R.locomoter_partno = temp->value();
 	temp = (Fl_Input*)b->parent()->child(15);
@@ -141,13 +155,17 @@ void EnterCB(Fl_Widget* w, void* p)
 	temp = (Fl_Input*)b->parent()->child(16);
 	R.locomoter_type = temp->value();
 	temp = (Fl_Input*)b->parent()->child(17);
-	R.locomoter_cost = temp->value();
+	s = temp->value();
+	R.locomoter_cost = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(18);
-	R.locomoter_weight = temp->value();
+	s = temp->value();
+	R.locomoter_weight = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(19);
-	R.max_speed = temp->value();
+	s = temp->value();
+	R.max_speed = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(20);
-	R.power_consumed = temp->value();
+	s = temp->value();
+	R.power_consumed = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(21);
 	R.battery_partno = temp->value();
 	temp = (Fl_Input*)b->parent()->child(22);
@@ -155,13 +173,17 @@ void EnterCB(Fl_Widget* w, void* p)
 	temp = (Fl_Input*)b->parent()->child(23);
 	R.battery_type = temp->value();
 	temp = (Fl_Input*)b->parent()->child(24);
-	R.battery_cost = temp->value();
+	s = temp->value();
+	R.battery_cost = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(25);
-	R.battery_weight = temp->value();
+	s = temp->value();
+	R.battery_weight = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(26);
-	R.max_power = temp->value();
+	s = temp->value();
+	R.max_power = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(27);
-	R.energy = temp->value();
+	s = temp->value();
+	R.energy = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(28);
 	R.arms_partno = temp->value();
 	temp = (Fl_Input*)b->parent()->child(29);
@@ -169,14 +191,17 @@ void EnterCB(Fl_Widget* w, void* p)
 	temp = (Fl_Input*)b->parent()->child(30);
 	R.arms_type = temp->value();
 	temp = (Fl_Input*)b->parent()->child(31);
-	R.arms_cost = temp->value();
+	s = temp->value();
+	R.arms_cost = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(32);
-	R.arms_weight = temp->value();
+	s = temp->value();
+	R.arms_weight = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(33);
-	R.arms_power = temp->value();
+	s = temp->value();
+	R.arms_power = str_to_double(s);
 	temp = (Fl_Input*)b->parent()->child(34);
-	R.no_of_arms = temp->value();
-
+	s = temp->value();
+	R.no_of_arms = str_to_double(s);
 	Robots.push_back(R);
 }
 
@@ -231,14 +256,6 @@ void RoboPartsCB(Fl_Widget* w, void* p)
 	CRP->show();
 	view->redraw();
 }
-
-double str_to_double(string s)
-	{
-		istringstream is(s);
-		double d;
-		is >> d;
-		return d;
-	}
 
 void View::draw()
 {
