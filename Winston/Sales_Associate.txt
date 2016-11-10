@@ -1,132 +1,83 @@
-//GUI widgets
+Fl_Window *Order_dialog;
+Fl_Window *Bill_dialog;
+Fl_Window *SAReport_dialog;
 
-#include <FL/Fl.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Button.H>
-#include <FL/Fl_Box.H>
-#include <FL/Fl_Menu_Bar.H>
-#include <FL/Fl_Menu_Button.H>
-#include <FL/Fl_JPEG_Image.H>
-#include <FL/Fl_Shared_Image.H>
-#include <FL/Fl_Widget.H>
-#include <FL/Fl_Text_Display.H>
-#include <FL/fl_ask.h>
-#include <cctype>
-
-//CREATE WIDGET POINTERS
-
-Fl_Window *order_dialog;
-Fl_Window *bill_dialog;
-Fl_Window *SAreport_dialog;
-
-void View::draw()
+void SAReportCB(Fl_Widget* w, void* p)
 {
-	Fl_Box::draw();
-}
-bool View::saved()
-{
-	return dirty;
-}
-
-//CREATE ORDER DIALOG
-void Sales_Associate::OrderCB(Fl_Widget* w, void* p)
-{
+	Fl_Window *SAReport_dialog = new Fl_Window(1280,720);
 	
-	const char *s = "Enter Line Width";
-	const char *d = "0";
-	const char *a = fl_input(s, d);
-	if (isdigit(*a))
-	{
-		view->set_width(atoi(a));
-	}
+	Fl_Input *sa_search_name = new Fl_Input(150,50,100,30, “Enter name for your sales report:”);
 
-	cout << "Enter Order No : ";
-	cin>>O.order_no;
+	//Based on associate name entered, dialog will display the appropriate
+	//report info
 
-	cout << "Enter Sales Associate name : ";
-	cin.ignore();
-	getline(cin, O.sa_name);
+	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+	Fl_Text_Display *display = new Fl_Text_Display(20, 80, 1280, 300, “Sales Report”);	
+	display->buffer(buff);
+	buff->text(“Sales report info displays here.”);
 
-	cout << "Enter Customer No : ";
-	cin >> O.cust_no;
 
-	cout << "Enter Customer Name : ";
-	cin.ignore();
-	getline(cin, O.cust_name);
+	Fl_Button *Enter = new Fl_Button(150, 350, 80, 50, "ENTER");
+	Fl_Button *Cancel = new Fl_Button(235, 380, 80, 50, “CANCEL”);
 
-	cout << "Enter Order's date : ";
-	cin.ignore();
-	getline(cin, O.sales_date);
-	
-	cout << "Enter Model Name : ";
-	cin.ignore();
-	getline(cin, O.model_name);
 
-	cout << "Enter No. of Robots : ";
-	cin >> O.robots_ordered;
+	dialog->end();
+	dialog->set_non_modal();
 
-	for (int i = 0; i <= Robot_Parts.size(); i++)
-	{
-		if (O.model_name == Robot_Parts[i].r_name)
-		{
-			O.sub_total = Robot_Parts[i].r_price*O.robots_ordered;
-		}
-	}
-	O.shipping = O.sub_total*0.10;
-	O.tax = O.sub_total*.0825;
-	O.net_total = O.sub_total + O.shipping + O.tax;
+	dialog->show();
+	view->redraw();
+
 
 }
 
-void Sales_Associate::BillCB()
-{
-	//CREATE PRINT BILL DIALOG
-	bill_dialog = new Fl_Window(720,480,"Print Bill of Sale");
-	win->color(FL_WHITE);
-	view = new View (0, 0, 720, 480);
 
-	cout << "Order number: " << O.order_no << endl;
-	cout << "Customer number: " << O.cust_no << endl;
-	cout << "Your sales associate: " << O.sa_name << endl;
-	cout << "Sale date: " << O.sales_date << endl;
-	cout << endl;
-	cout << "Number of robots ordered: " << O.robots_ordered << endl;
-	cout << "Model ordered: " << O.model_name << endl;
-	cout << endl;
-	cout << "Subtotal: $ " << O.sub_total << endl;
-	cout << "Shipping: $ " << O.shipping << endl;
-	cout << "Tax:      $ " << O.tax << endl;
-	cout << endl;
-	cout << "Total:    $ " << O.net_total;
+void OrderCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *Order_dialog = new Fl_Window(1280,720);	
+
+	Fl_Input *order_no = new Fl_Input(150,50,100,30, “Order Number: ");
+	Fl_Input *sales_name = new Fl_Input(150,80,100,30, “Sales Associate:”);
+	Fl_Input *cust_no = new Fl_Input(150,110,100,30, “Customer Number:”);
+	Fl_Input *cust_name = new Fl_Input(150,140,100,30, “Customer Name:”);
+	Fl_Input *order_date = new Fl_Input(150,170,100,30, “Order date:”);
+	Fl_Input *model_name = new Fl_Input(150,200,100,30, “Model Name:”);
+	Fl_Input *robot_no = new Fl_Input(150,230,100,30, “Number of Robots:”);
+
+	Fl_Button *Enter = new Fl_Button(150, 260, 80, 50, "ENTER");
+	Fl_Button *Cancel = new Fl_Button(235, 260, 80, 50, “CANCEL”);
+	
+	dialog->end();
+	dialog->set_non_modal();
+
+	dialog->show();
+	view->redraw();
 
 }
 
-void Sales_Associate::SAReportCB()
-{
-	//CREATE PRINT SALES REPORT DIALOG
-	SAreport_dialog = new Fl_Window(720,480,"Print Sales Report");
-	win->color(FL_WHITE);
-	view = new View (0, 0, 720, 480);
 
-	string sa_search_name;
-	double sales_total = 0;
+void BillCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *Bill_dialog = new Fl_Window(1280,720);
 	
-	cout << "Enter your name for your sales report." << endl;
-	cin.ignore();
-	getline(cin, sa_search_name);
-	
-	for (int i = 0; i <= Order_Details.size(); i++)
-	{
-		if (sa_search_name == Order_Details[i].sa_name)
-		{
-		    cout << Order number: " << Order_Details[i].order_no << endl;
-			cout << Customer:     " << Order_Details[i].cust.name << endl;
-			cout << Total:        $" << Order_Details[i].net_total << endl;
-			cout << endl;
-			
-			sales_total = sales_total + Order_Details[i].net_total;
-		}
-	}
-	
-	cout << "Total sales done by " << sa_search_name << ": $" << sales_total;
-	
+	Fl_Input *bill_search_no = new Fl_Input(150,50,100,30, “Enter bill number:”);
+
+	//Based on bill number entered, dialog will display the appropriate
+	//bill info
+
+	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+	Fl_Text_Display *display = new Fl_Text_Display(20, 80, 1280, 300, “Bill Information”);	
+	display->buffer(buff);
+	buff->text(“Bill info displays here.”);
+
+	Fl_Button *Enter = new Fl_Button(150, 350, 80, 50, "ENTER");
+	Fl_Button *Cancel = new Fl_Button(235, 380, 80, 50, “CANCEL”);
+
+
+	dialog->end();
+	dialog->set_non_modal();
+
+	dialog->show();
+	view->redraw();
+
+
+}
