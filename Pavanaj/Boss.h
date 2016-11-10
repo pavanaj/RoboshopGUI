@@ -3,10 +3,10 @@
 class Boss
 {
 	public:
-		void Sales_Report();
-		void Print_Orders();
-		void Profit();
-		void Models_Sold();
+		//void Sales_Report();
+		void OrdersCB(Fl_Widget* w, void* p);
+		void ProfitCB(Fl_Widget* w, void* p);
+		//void Models_Sold();
 };
 
 #endif // BOSS_H
