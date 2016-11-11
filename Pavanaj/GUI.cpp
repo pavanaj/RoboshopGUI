@@ -102,15 +102,22 @@ struct Order
 
 vector <Order> Orders;
 
+string double_to_string(double d)
+{
+	char *c;
+	itoa(d,c,10);
+	string s(c);
+	return s;
+}
+
 double str_to_double(string s)
 {
-	istringstream is(s);
-	double d;
-	is >> d;
+	const char *c = s.c_str();
+	double d = atoi(c);
 	return d;
 }
 
-void EnterCB(Fl_Widget* w, void* p)
+void EnterRoboPartsCB(Fl_Widget* w, void* p)
 {
 	Fl_Button* b = (Fl_Button*)w;
 	Fl_Input* temp;
@@ -251,151 +258,36 @@ void RoboPartsCB(Fl_Widget* w, void* p)
 	Fl_Input *noofarms = new Fl_Input(150, 600, 100, 30, "Arms Number : ");//Child 34
 
 	Fl_Button *Enter = new Fl_Button(525, 625, 80, 50, "ENTER");
-	Enter->callback(EnterCB);
+	Enter->callback(EnterRoboPartsCB);
 	
 	CRP->show();
 	view->redraw();
 }
 
-void OrdersCB(Fl_Widget* w, void* p)
+void CreateCustomerCB(Fl_Widget* w, void* p)
 {
-	Fl_Window *order = new Fl_Window(900, 550);
-	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
-	Fl_Text_Display *display = new Fl_Text_Display(20, 20, 900, 550, "ORDERS");
-	display->buffer(buff);
-	order->resizable(*display);
-	order->show();
-	buff->text("The following is the list of Orders for Robo shop:\n");
-	for (int i = 0; i < Orders.size(); i++)
-	{
+	Fl_Window *win = new Fl_Window(600, 400);
+	Fl_Input *cust_no = new Fl_Input(150, 50, 100, 30, "Customer No : "); //Child 0
+	Fl_Input *cust_name = new Fl_Input(150, 150, 100, 30, "Customer Name : "); //Child 1
+	Fl_Button *Create = new Fl_Button(100, 300 , 80, 50, "CREATE");
+//	Create->callback(Create_Customer_CB);
 
-		buff->text(Orders[i].order_no);
-		buff->text("\t");
-		buff->text(Orders[i].cust_name);
-		buff->text("\t");
-		string s1 = its(Orders[i].robots_ordered);
-		buff->text(s1);
-		buff->text("\t");
-		buff->text(Orders[i].sa_name);
-		buff->text("\t");
-		buff->text(Orders[i].sales_date);
-		buff->text("\t");
-		buff->text(Orders[i].model_name);
-		buff->text("\t");
-		string s2 = dts(Orders[i].net_total);
-		buff->text(s2);
-	}
+	win->show();
 	view->redraw();
 }
 
-void ProfitCB(Fl_Widget* w, void* p)
+void CreateSACB(Fl_Widget* w, void* p)
 {
-	double pft;
-	vector<double> rp;
-	Fl_Window *pt = new Fl_Window(900, 550);
-	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
-	Fl_Text_Display *display = new Fl_Text_Display(20, 20, 900, 550, "PROFITS");
-	display->buffer(buff);
-	pt->resizable(*display);
-	pt->show();
-	for (int i = 0; i < Robots.size(); i++)
-	{
-		for (int j = 1; j < Robots.size(); j++)
-		{
-			if (Robots[i].r_name == Robots[j].r_name)
-			{
-				pft = pft + Robots[j].r_profit;
-			}
-			else
-			{
-				pft = Robots[i].r_profit;
-			}
-		}
-		rp.push_back(pft);
+	Fl_Window *win = new Fl_Window(600, 400);
+	Fl_Input *cust_no = new Fl_Input(150, 50, 100, 30, "Sales Associate No : "); //Child 0
+	Fl_Input *cust_name = new Fl_Input(150, 150, 100, 30, "Sales Associate Name : "); //Child 1
+	Fl_Button *Create = new Fl_Button(100, 300, 80, 50, "CREATE");
+//	Create->callback(Create_SA_CB);
 
-		//buff->text(i);
-		buff->text(". Robot Name : ");
-		buff->text(Robots[i].r_name);
-		buff->text(" Total Profit : ");
-		string s = dts(rp[i]);
-		buff->text(s);
-		buff->text("\n");
-	}
+	win->show();
 	view->redraw();
 }
 
-void SAReportCB(Fl_Widget* w, void* p)
-{
-	Fl_Window *SAReport_dialog = new Fl_Window(1280, 720);
-
-	Fl_Input *sa_search_name = new Fl_Input(150, 50, 100, 30, “Enter name for your sales report : ”);
-
-	//Based on associate name entered, dialog will display the appropriate
-	//report info
-
-	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
-	Fl_Text_Display *display = new Fl_Text_Display(20, 80, 1280, 300, “Sales Report”);
-	display->buffer(buff);
-	buff->text(“Sales report info displays here.”);
-
-	Fl_Button *Enter = new Fl_Button(150, 350, 80, 50, "ENTER");
-	Fl_Button *Cancel = new Fl_Button(235, 380, 80, 50, "CANCEL");
-
-	dialog->end();
-	dialog->set_non_modal();
-
-	dialog->show();
-	view->redraw();
-}
-
-
-void OrderCB(Fl_Widget* w, void* p)
-{
-	Fl_Window *Order_dialog = new Fl_Window(1280, 720);
-
-	Fl_Input *order_no = new Fl_Input(150, 50, 100, 30, “Order Number : ");
-		Fl_Input *sales_name = new Fl_Input(150, 80, 100, 30, “Sales Associate : ”);
-	Fl_Input *cust_no = new Fl_Input(150, 110, 100, 30, “Customer Number : ”);
-	Fl_Input *cust_name = new Fl_Input(150, 140, 100, 30, “Customer Name : ”);
-	Fl_Input *order_date = new Fl_Input(150, 170, 100, 30, “Order date : ”);
-	Fl_Input *model_name = new Fl_Input(150, 200, 100, 30, “Model Name : ”);
-	Fl_Input *robot_no = new Fl_Input(150, 230, 100, 30, “Number of Robots : ”);
-
-	Fl_Button *Enter = new Fl_Button(150, 260, 80, 50, "ENTER");
-	Fl_Button *Cancel = new Fl_Button(235, 260, 80, 50, "CANCEL");
-
-	dialog->end();
-	dialog->set_non_modal();
-
-	dialog->show();
-	view->redraw();
-
-}
-
-
-void BillCB(Fl_Widget* w, void* p)
-{
-	Fl_Window *Bill_dialog = new Fl_Window(1280, 720);
-
-	Fl_Input *bill_search_no = new Fl_Input(150, 50, 100, 30, “Enter bill number : ”);
-
-	//Based on bill number entered, dialog will display the appropriate
-	//bill info
-
-	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
-	Fl_Text_Display *display = new Fl_Text_Display(20, 80, 1280, 300, “Bill Information”);
-	display->buffer(buff);
-	buff->text(“Bill info displays here.”);
-
-	Fl_Button *Enter = new Fl_Button(150, 350, 80, 50, "ENTER");
-	Fl_Button *Cancel = new Fl_Button(235, 380, 80, 50, "CANCEL");
-
-	dialog->end();
-	dialog->set_non_modal();
-
-	dialog->show();
-	view->redraw();
-}
 void View::draw()
 {
 	Fl_Box::draw();
@@ -488,11 +380,11 @@ int main()
 		{ 0 },
 		{ "&Boss",0,0,0, FL_SUBMENU },
 		{ "Sales Report" },//(Fl_Callback*)SalesReportCB },
-		{ "View Orders","0",(Fl_Callback*)OrdersCB },
+		{ "View Orders"},//(Fl_Callback*)OrdersCB },
 		{ "Model Sales" },//(Fl_Callback*)ModelSalesCB },
-		{ "Models Profit","0",(Fl_Callback*)ProfitCB},
-		{ "Create Customer" },//(Fl_Callback*)CreateCustomerCB },
-		{ "Create Sales Associate" },//(Fl_Callback*)CreateSACB },
+		{ "Models Profit"},//(Fl_Callback*)ProfitCB },
+		{ "Create Customer",0,(Fl_Callback*)CreateCustomerCB },
+		{ "Create Sales Associate",0,(Fl_Callback*)CreateSACB },
 		{ 0 },
 		{ "&Sales Associate",0,0,0, FL_SUBMENU },
 		{ "Sales Report" },//(Fl_Callback*)SAReportCB },
@@ -506,9 +398,9 @@ int main()
 		{ 0 },
 		{ 0 }
 	};
-	menubar->menu(menuitems);
 
-	win->resizable(*win);
+	menubar->menu(menuitems);
+	//win->resizable(*win);
 	win->end();
 	win->show();
 	return (Fl::run());
