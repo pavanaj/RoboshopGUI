@@ -1,9 +1,6 @@
-#include "iostream"
-#include "fstream"
 #include "istream"
 #include "ostream"
 #include "std_lib_facilities.h"
-
 #include "Robot_Parts.h"
 #include "Arms.h"
 #include "Battery.h"
@@ -83,7 +80,6 @@ struct Orders
     double shipping;
     double tax;
     double net_total;
-
 }O;
 
 vector <Orders> Order_Details;
@@ -255,13 +251,13 @@ vector <Orders> Order_Details;
 		{
 			if (O.model_name == Robot_Parts[i].r_name)
 			{
-				O.sub_total = Robot_Parts[i].r_price*O.robots_ordered;
+				O.sub_total = Robot_Parts[i].r_price * O.robots_ordered;
 			}
 		}
 		O.shipping = O.sub_total*0.10;
-		O.tax = O.sub_total*.0825;
+		O.tax = O.sub_total*.08;
 		O.net_total = O.sub_total + O.shipping + O.tax;
-
+		Order_Details.push_back(O);
 	}
 
 	void Sales_Associate::Print()
@@ -279,7 +275,7 @@ vector <Orders> Order_Details;
 		cout << "Tax:      $ " << O.tax << endl;
 		cout << endl;
 		cout << "Total:    $ " << O.net_total;
-
+		cout << endl;
 	}
 
 	void Sales_Associate::Report()
@@ -305,6 +301,8 @@ vector <Orders> Order_Details;
 		}
 
 		cout << "Total sales done by " << sa_search_name << ": $" << sales_total;
+
+		cout << endl;
 	}
 
 	void Customer::Catalog()
@@ -314,10 +312,10 @@ vector <Orders> Order_Details;
 		int flag = 0;
 		int model;
 
-		cout << "Sr. No.\tName\tPrice\tDescription" << endl;
+		cout << "Sr. No.\tName\t\tPrice\tDescription" << endl;
 		for (i = 0; i < Robot_Parts.size(); i++)
 		{
-			cout << i+1 << "\t" << Robot_Parts[i].r_name << "\t" << Robot_Parts[i].r_price << "\t" << Robot_Parts[i].description << endl;
+			cout << i+1 << "\t" << Robot_Parts[i].r_name << "\t\t" << Robot_Parts[i].r_price << "\t" << Robot_Parts[i].description << endl;
 		}
 
 		while (flag == 0)
@@ -378,12 +376,12 @@ vector <Orders> Order_Details;
 		cout << "Please enter your Customer Number : " << endl;
 		cin.ignore();
 		getline(cin, cust_no);
+		cout << "Order # Order-Date SA-Name Model-Name Robots-Ordered Sub-Total Shipping Tax\tTotal" << endl;
 
 		for (i = 0; i < Order_Details.size(); i++)
 		{
 			if (cust_no == Order_Details[i].cust_no)
 			{
-				cout << "Order No.\tDate of Order\tSA Name\tModel Name\tRobots Ordered\tSub Total\tShipping\tTax\tTotal" << endl;
 				cout << Order_Details[i].order_no << "\t" << Order_Details[i].sales_date << "\t" << Order_Details[i].sa_name << "\t" << Order_Details[i].model_name
 					<< "\t" << Order_Details[i].robots_ordered << "\t$" << Order_Details[i].sub_total << "\t$ " << Order_Details[i].shipping
 					<< "\t$ " << Order_Details[i].tax << "\t$ " << Order_Details[i].net_total << endl;
@@ -430,53 +428,29 @@ vector <Orders> Order_Details;
 
 	void Boss::Sales_Report()
 	{
-		double total_sales;
+		double total_sales = 0;
 		string ans;
 		double max;
-		vector<double> ts;
 		int index_no;
 		int k;
 		for (int i = 0; i < Order_Details.size(); i++)
 		{
-			for (int j = 1; j < Order_Details.size(); j++)
+			total_sales = 0;
+			for (int j = 0; j < Order_Details.size(); j++)
 			{
 				if (Order_Details[i].sa_name == Order_Details[j].sa_name)
 				{
 					total_sales = total_sales + Order_Details[j].net_total;
-				}
-				else
-				{
-					total_sales = Order_Details[i].net_total;
-				}
+				}			
 			}
-			ts.push_back(total_sales);
-			cout << i << ". Name of Sales Associate : " << Order_Details[i].sa_name << " Total Sales : $" << ts[i] << endl;
+			cout << i << ". Name of Sales Associate : " << Order_Details[i].sa_name << " Total Sales : $" << total_sales << endl;
 		}
-		cout << "Do you want to view a detailed report. Y/N" << endl;
-		cin >> ans;
-		if (ans == "y"||ans=="Y")
-		{
-			cout << "Enter the SA_NO for detailed report" << endl;
-			cin >> index_no;
-			cout << Order_Details[index_no].sa_name << "\t" << ts[index_no] << endl;
-			cout << Order_Details[index_no].order_no << "\n" << Order_Details[index_no].cust_name << "\n" << Order_Details[index_no].robots_ordered << "\n" << Order_Details[index_no].sales_date << "\n" << Order_Details[index_no].model_name << "\n" << Order_Details[index_no].net_total << endl;
-		}
-
-		max = ts[0];
-		for (int i = 1; i < ts.size(); i++)
-		{
-			if (ts[i] > max)
-			{
-				max = ts[i];
-				k = i;
-			}
-		}
-		cout << "The highest sale was $ " << max << endl;
 	}
 
 	void Boss::Print_Orders()
 	{
 		cout << "The following is the list of Orders for Robo shop:" << endl;
+		cout << "Order No\tCust-Name\tRobots-Ordered\tSA-Name\tSales-Date\tModel-Name\tNet-Total\n";
 		for (int i = 0; i < Order_Details.size(); i++)
 		{
 			cout << Order_Details[i].order_no << "\t" << Order_Details[i].cust_name << "\t" <<
@@ -487,47 +461,28 @@ vector <Orders> Order_Details;
 
 	void Boss::Profit()
 	{
-		int pft;
-		vector<double> rp;
+		double p=0;
 		for (int i = 0; i < Robot_Parts.size(); i++)
 		{
-			for (int j = 1; j < Robot_Parts.size(); j++)
-			{
-				if (Robot_Parts[i].r_name == Robot_Parts[j].r_name)
-				{
-					pft = pft + Robot_Parts[j].r_profit;
-				}
-				else
-				{
-					pft = Robot_Parts[i].r_profit;
-				}
-			}
-			rp.push_back(pft);
-			cout << i << ". Robot Name : " << Robot_Parts[i].r_name << " Total Profit : " << rp[i] << endl;
+			p = Robot_Parts[i].r_profit;
+			cout << (i+1) << ". Robot Name : " << Robot_Parts[i].r_name << " Profit : " << p << endl;
 		}
-
 	}
 
 	void Boss::Models_Sold()
 	{
-
-		int r_sold;
-		vector<int> rs;
+		int r_sold=0;
 		for (int i = 0; i < Order_Details.size(); i++)
 		{
-			for (int j = 1; j < Order_Details.size(); j++)
+			r_sold = 0;
+			for (int j = 0; j < Order_Details.size(); j++)
 			{
 				if (Order_Details[i].model_name == Order_Details[j].model_name)
 				{
 					r_sold = r_sold + Order_Details[j].robots_ordered;
 				}
-				else
-				{
-					r_sold = Order_Details[i].robots_ordered;
-				}
 			}
-			rs.push_back(r_sold);
-			cout << i << ". Model Name : " << Order_Details[i].model_name << " Robots sold : " << rs[i] << endl;
+			cout << i << ". Model Name : " << Order_Details[i].model_name << " Robots sold : " << r_sold << endl;
 		}
 
 	}
@@ -610,7 +565,6 @@ class Controller
 					{
 						sa.Place_Order();
 						sa.Print();
-						Order_Details.push_back(O);
 					}
 					else if (choice == 2)
 					{
@@ -701,69 +655,238 @@ class Controller
 			cout << endl;
 		}
 
+		double str_to_double(string s)
+		{
+			const char *c = s.c_str();
+			double d = atoi(c);
+			return d;
+		}
+
 		void read_data()
 		{
 			ifstream read_Orders;
 			read_Orders.open("Orders_data.txt");
+
 			ifstream read_RobotParts;
 			read_RobotParts.open("RobotParts_data.txt");
+
 			ifstream read_Catalog;
 			read_Catalog.open("Catalog_data.txt");
-			
+
+			string word;
+			double number;
+
 			if (read_Orders.fail() || read_RobotParts.fail() || read_Catalog.fail())
 			{
 				cerr << "Error opening File";
 			}
 
-			while (!read_Orders.eof())
+			while (getline(read_Orders, word, '@'))
 			{
-				// read data from Orders_data
-				getline(read_Orders, O.order_no);
-				getline(read_Orders, O.cust_no);
-				getline(read_Orders, O.cust_name);
-				read_Orders >> O.robots_ordered;
-				//ignore
-				getline(read_Orders, O.sa_name);
-				getline(read_Orders, O.sales_date);
-				getline(read_Orders, O.model_name);
-				read_Orders >> O.sub_total;
-				read_Orders >> O.shipping;
-				read_Orders >> O.tax;
-				read_Orders >> O.net_total;
+				O.order_no = word;
+
+				getline(read_Orders, word, '@');
+				O.cust_no = word;
+
+				getline(read_Orders, word, '@');
+				O.cust_name = word;
+
+				getline(read_Orders, word, '@');
+				number = str_to_double(word);
+				O.robots_ordered = number;
+
+				getline(read_Orders, word, '@');
+				O.sa_name = word;
+
+				getline(read_Orders, word, '@');
+				O.sales_date = word;
+
+				getline(read_Orders, word, '@');
+				O.model_name = word;
+
+				getline(read_Orders, word, '@');
+				number = str_to_double(word);
+				O.sub_total = number;
+
+				getline(read_Orders, word, '@');
+				number = str_to_double(word);
+				O.shipping = number;
+
+				getline(read_Orders, word, '@');
+				number = str_to_double(word);
+				O.tax = number;
+
+				getline(read_Orders, word, '\n');
+				number = str_to_double(word);
+				O.net_total = number;
+
 				Order_Details.push_back(O);
 			}
-			while (!read_RobotParts.eof())// good() 
-			{
-				// read contents of Robot Parts
-				getline(read_RobotParts, R.r_name);
-				getline(read_RobotParts, R.r_no);
-				read_RobotParts >> R.r_cost;
-				read_RobotParts >> R.r_price;
-				read_RobotParts >> R.r_profit;
-				read_RobotParts >> R.l_cost;
-				read_RobotParts >> R.t_cost;
-				read_RobotParts >> R.a_cost;
-				read_RobotParts >> R.b_cost;
-				read_RobotParts >> R.h_cost;
-				getline(read_RobotParts, R.description);
-				Robot_Parts.push_back(R);
 
-			}
-			while (!read_Catalog.eof())// good() 
+			while (getline(read_RobotParts, word, '@'))
 			{
-				// read contents of detailed catalog
-				getline(read_Catalog, DC.head_name);
-				getline(read_Catalog, DC.torso_name);
-				read_Catalog >> DC.compartments;
-				getline(read_Catalog, DC.locomoter_name);
-				read_Catalog >> DC.max_speed;
-				read_Catalog >> DC.power_consumed;
-				getline(read_Catalog, DC.battery_name);
-				read_Catalog >> DC.max_power;
-				read_Catalog >> DC.energy;
-				getline(read_Catalog, DC.arms_name);
-				read_Catalog >> DC.no_of_arms; 
-				read_Catalog >> DC.arms_power;
+				R.r_name = word;
+
+				getline(read_RobotParts, word, '@');
+				R.r_no = word;
+
+				getline(read_RobotParts, word, '@');
+				number = str_to_double(word);
+				R.r_cost = number;
+
+				getline(read_RobotParts, word, '@');
+				number = str_to_double(word);
+				R.r_price = number;
+
+				getline(read_RobotParts, word, '@');
+				number = str_to_double(word);
+				R.r_price = number;
+
+				getline(read_RobotParts, word, '@');
+				number = str_to_double(word);
+				R.l_cost = number;
+
+				getline(read_RobotParts, word, '@');
+				number = str_to_double(word);
+				R.t_cost = number;
+
+				getline(read_RobotParts, word, '@');
+				number = str_to_double(word);
+				R.a_cost = number;
+
+				getline(read_RobotParts, word, '@');
+				number = str_to_double(word);
+				R.b_cost = number;
+
+				getline(read_RobotParts, word, '@');
+				number = str_to_double(word);
+				R.h_cost = number;
+
+				getline(read_RobotParts, word, '\n');
+				R.description = word;
+
+				Robot_Parts.push_back(R);
+			}
+
+			while (getline(read_Catalog, word, '@'))
+			{
+				// Head Specs
+				DC.head_name = word;
+
+				getline(read_Catalog, word, '@');
+				DC.head_type = word;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.head_cost = number;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.head_weight = number;
+
+				getline(read_Catalog, word, '@');
+				DC.head_partno = word;
+
+				// Torso Specs
+				getline(read_Catalog, word, '@');
+				DC.torso_name = word;
+
+				getline(read_Catalog, word, '@');
+				DC.torso_type = word;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.torso_cost = number;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.torso_weight = number;
+
+				getline(read_Catalog, word, '@');
+				DC.torso_partno = word;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.compartments = number;
+
+				// Locomoter Specs
+				getline(read_Catalog, word, '@');
+				DC.locomoter_name = word;
+
+				getline(read_Catalog, word, '@');
+				DC.locomoter_type = word;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.locomoter_cost = number;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.locomoter_weight = number;
+
+				getline(read_Catalog, word, '@');
+				DC.locomoter_partno = word;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.max_speed = number;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.power_consumed = number;
+
+				// Battery Specs
+				getline(read_Catalog, word, '@');
+				DC.battery_name = word;
+
+				getline(read_Catalog, word, '@');
+				DC.battery_type = word;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.battery_cost = number;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.battery_weight = number;
+
+				getline(read_Catalog, word, '@');
+				DC.battery_partno = word;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.max_power = number;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.energy = number;
+
+				// Arms Specs
+				getline(read_Catalog, word, '@');
+				DC.arms_name = word;
+
+				getline(read_Catalog, word, '@');
+				DC.arms_type = word;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.arms_cost = number;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.arms_weight = number;
+
+				getline(read_Catalog, word, '@');
+				DC.arms_partno = word;
+
+				getline(read_Catalog, word, '@');
+				number = str_to_double(word);
+				DC.no_of_arms = number;
+
+				getline(read_Catalog, word, '\n');
+				number = str_to_double(word);
+				DC.arms_power = number;
+
 				Details.push_back(DC);
 			}
 		}
@@ -772,8 +895,10 @@ class Controller
 		{
 			ofstream write_Orders;
 			write_Orders.open("Orders_data.txt");
+
 			ofstream write_RobotParts;
 			write_RobotParts.open("RobotParts_data.txt");
+
 			ofstream write_Catalog;
 			write_Catalog.open("Catalog_data.txt");
 
@@ -782,77 +907,74 @@ class Controller
 				cerr << "Error opening File";
 			}
 
-			for(int i=0;i<Order_Details.size();i++)
+			for (int i = 0; i < Order_Details.size(); i++)
 			{
-				//write data to Orders_data
-				write_Orders << Order_Details[i].order_no << endl;
-				write_Orders << Order_Details[i].cust_no << endl;
-				write_Orders << Order_Details[i].cust_name << endl;
-				write_Orders << Order_Details[i].robots_ordered << endl;
-				write_Orders << Order_Details[i].sa_name << endl;
-				write_Orders << Order_Details[i].sales_date << endl;
-				write_Orders << Order_Details[i].model_name << endl;
-				write_Orders << Order_Details[i].sub_total << endl;
-				write_Orders << Order_Details[i].shipping << endl;
-				write_Orders << Order_Details[i].tax << endl;
-				write_Orders << Order_Details[i].net_total << endl;
+				write_Orders << Order_Details[i].order_no << "@"
+					<< Order_Details[i].cust_no << "@"
+					<< Order_Details[i].cust_name << "@"
+					<< Order_Details[i].robots_ordered << "@"
+					<< Order_Details[i].sa_name << "@"
+					<< Order_Details[i].sales_date << "@"
+					<< Order_Details[i].model_name << "@"
+					<< Order_Details[i].sub_total << "@"
+					<< Order_Details[i].shipping << "@"
+					<< Order_Details[i].tax << "@"
+					<< Order_Details[i].net_total << endl;
 			}
-			for (int i = 0; i<Robot_Parts.size(); i++)
+
+			for (int i = 0; i < Robot_Parts.size(); i++)
 			{
-				// write data to RobotParts_data
-				write_RobotParts << Robot_Parts[i].r_name << endl;
-				write_RobotParts << Robot_Parts[i].r_no << endl;
-				write_RobotParts << Robot_Parts[i].r_cost << endl;
-				write_RobotParts << Robot_Parts[i].r_price << endl;
-				write_RobotParts << Robot_Parts[i].r_profit << endl;
-				write_RobotParts << Robot_Parts[i].l_cost << endl;
-				write_RobotParts << Robot_Parts[i].t_cost << endl;
-				write_RobotParts << Robot_Parts[i].a_cost << endl;
-				write_RobotParts << Robot_Parts[i].b_cost << endl;
-				write_RobotParts << Robot_Parts[i].h_cost << endl;
-				write_RobotParts << Robot_Parts[i].description << endl;
+				write_RobotParts << Robot_Parts[i].r_name << "@"
+					<< Robot_Parts[i].r_no << "@"
+					<< Robot_Parts[i].r_cost << "@"
+					<< Robot_Parts[i].r_price << "@"
+					<< Robot_Parts[i].r_profit << "@"
+					<< Robot_Parts[i].l_cost << "@"
+					<< Robot_Parts[i].t_cost << "@"
+					<< Robot_Parts[i].a_cost << "@"
+					<< Robot_Parts[i].b_cost << "@"
+					<< Robot_Parts[i].h_cost << "@"
+					<< Robot_Parts[i].description << endl;
+			}
 
-				// write data to Catalog_data
-				write_Catalog << Details[i].head_name << endl;
-				write_Catalog << Details[i].head_type << endl;
-				write_Catalog << Details[i].head_cost << endl;
-				write_Catalog << Details[i].head_weight << endl;
-				write_Catalog << Details[i].head_partno << endl;
-
-				write_Catalog << Details[i].torso_name << endl;
-				write_Catalog << Details[i].torso_type << endl;
-				write_Catalog << Details[i].torso_cost << endl;
-				write_Catalog << Details[i].torso_weight << endl;
-				write_Catalog << Details[i].torso_partno << endl;
-				write_Catalog << Details[i].compartments << endl;
-
-				write_Catalog << Details[i].locomoter_name << endl;
-				write_Catalog << Details[i].locomoter_type << endl;
-				write_Catalog << Details[i].locomoter_cost << endl;
-				write_Catalog << Details[i].locomoter_weight << endl;
-				write_Catalog << Details[i].locomoter_partno << endl;
-				write_Catalog << Details[i].max_speed << endl;
-				write_Catalog << Details[i].power_consumed << endl;
-
-				write_Catalog << Details[i].battery_name << endl;
-				write_Catalog << Details[i].battery_type << endl;
-				write_Catalog << Details[i].battery_cost << endl;
-				write_Catalog << Details[i].battery_weight << endl;
-				write_Catalog << Details[i].battery_partno << endl;
-				write_Catalog << Details[i].max_power << endl;
-				write_Catalog << Details[i].energy << endl;
-
-				write_Catalog << Details[i].arms_name << endl;
-				write_Catalog << Details[i].arms_type << endl;
-				write_Catalog << Details[i].arms_cost << endl;
-				write_Catalog << Details[i].arms_weight << endl;
-				write_Catalog << Details[i].arms_partno << endl;
-				write_Catalog << Details[i].no_of_arms << endl;
-				write_Catalog << Details[i].arms_power << endl;
-
-			}	
+			for (int i = 0; i < Details.size(); i++)
+			{
+				write_Catalog << Details[i].head_name << "@"
+					<< Details[i].head_type << "@"
+					<< Details[i].head_cost << "@"
+					<< Details[i].head_weight << "@"
+					<< Details[i].head_partno << "@"
+					<< Details[i].torso_name << "@"
+					<< Details[i].torso_type << "@"
+					<< Details[i].torso_cost << "@"
+					<< Details[i].torso_weight << "@"
+					<< Details[i].torso_partno << "@"
+					<< Details[i].compartments << "@"
+					<< Details[i].locomoter_name << "@"
+					<< Details[i].locomoter_type << "@"
+					<< Details[i].locomoter_cost << "@"
+					<< Details[i].locomoter_weight << "@"
+					<< Details[i].locomoter_partno << "@"
+					<< Details[i].max_speed << "@"
+					<< Details[i].power_consumed << "@"
+					<< Details[i].battery_name << "@"
+					<< Details[i].battery_type << "@"
+					<< Details[i].battery_cost << "@"
+					<< Details[i].battery_weight << "@"
+					<< Details[i].battery_partno << "@"
+					<< Details[i].max_power << "@"
+					<< Details[i].energy << "@"
+					<< Details[i].arms_name << "@"
+					<< Details[i].arms_type << "@"
+					<< Details[i].arms_cost << "@"
+					<< Details[i].arms_weight << "@"
+					<< Details[i].arms_partno << "@"
+					<< Details[i].no_of_arms << "@"
+					<< Details[i].arms_power << endl;
+			}
 		}
-void test_case()
+
+		void test_case()
 		{
 			R.r_name = "optimus";
 			R.r_no = "101";
@@ -861,10 +983,10 @@ void test_case()
 			R.a_cost = 100;
 			R.b_cost = 100;
 			R.h_cost = 100;
-			R.r_cost = R.a_cost + R.l_cost + R.t_cost + R.h_cost + R.b_cost;
+			R.r_cost = 500;
 			R.r_price = 800;
-			R.r_profit = R.r_price - R.r_cost;
-			R.description = "autobot";
+			R.r_profit = 300;
+			R.description = "autobot boss";
 			DC.head_name = "op_head";
 			DC.head_type = "head";
 			DC.head_cost = 100;
@@ -899,13 +1021,85 @@ void test_case()
 			DC.arms_power = 100;
 			Robot_Parts.push_back(R);
 			Details.push_back(DC);
+
+			O.order_no="1";
+			O.cust_no="1";
+			O.cust_name="Customer";
+			O.robots_ordered=1;
+			O.sa_name="SA";
+			O.sales_date="01/01/01";
+			O.model_name="optimus";
+			O.sub_total = 800;
+			O.shipping = 80;
+			O.tax = 64;
+			O.net_total = 944;
+			Order_Details.push_back(O);
+
+			R.r_name = "bumblebee";
+			R.r_no = "102";
+			R.l_cost = 50;
+			R.t_cost = 50;
+			R.a_cost = 50;
+			R.b_cost = 50;
+			R.h_cost = 50;
+			R.r_cost = 250;
+			R.r_price = 750;
+			R.r_profit = 500;
+			R.description = "autobot";
+			Robot_Parts.push_back(R);
+			DC.head_name = "bb_head";
+			DC.head_type = "head";
+			DC.head_cost = 50;
+			DC.head_weight = 50;
+			DC.head_partno = "1";
+			DC.torso_name = "bb_torso";
+			DC.torso_type = "torso";
+			DC.torso_cost = 50;
+			DC.torso_weight = 50;
+			DC.torso_partno = "1";
+			DC.compartments = 2;
+			DC.locomoter_name = "bb_loco";
+			DC.locomoter_type = "loco";
+			DC.locomoter_cost = 50;
+			DC.locomoter_weight = 50;
+			DC.locomoter_partno = "1";
+			DC.max_speed = 50;
+			DC.power_consumed = 50;
+			DC.arms_name = "bb_arms";
+			DC.arms_type = "arms";
+			DC.arms_cost = 50;
+			DC.arms_weight = 50;
+			DC.arms_partno = "1";
+			DC.no_of_arms = 1;
+			DC.arms_power = 50;
+			DC.battery_name = "bb_battery";
+			DC.battery_type = "battery";
+			DC.battery_cost = 50;
+			DC.battery_weight = 50;
+			DC.battery_partno = "1";
+			DC.max_power = 50;
+			DC.energy = 50;
+			Details.push_back(DC);
+
+			O.order_no = "2";
+			O.cust_no = "2";
+			O.cust_name = "Customer-2";
+			O.robots_ordered = 2;
+			O.sa_name = "SA-2";
+			O.sales_date = "02/02/02";
+			O.model_name = "bumblebee";
+			O.sub_total = 250;
+			O.shipping = 25;
+			O.tax = 25;
+			O.net_total = 300;
+			Order_Details.push_back(O);
 		}
 };
 
 int main()
 {
 	Controller co;
-	//co.read_data();
+	co.read_data();
 	co.menu();
 	co.write_data();
 	return 0;
