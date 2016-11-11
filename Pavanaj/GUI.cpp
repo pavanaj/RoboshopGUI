@@ -6,18 +6,6 @@
 #include <sstream>
 using namespace std;
 
-// interfaces 
-//#include "Robot_Parts.h"
-//#include "Arms.h"
-//#include "Battery.h"
-//#include "Boss.h"
-//#include "Customer.h"
-//#include "Head.h"
-//#include "Locomoter.h"
-//#include "Product_Manager.h"
-//#include "Sales_Associate.h"
-//#include "Torso.h"
-
 #include "View.h"
 
 // GUI Widgets
@@ -328,6 +316,10 @@ void CreateSACB(Fl_Widget* w, void* p)
 	view->redraw();
 }
 
+void ProfitCB(Fl_Widget* w, void* p)
+{
+
+}
 void View::draw()
 {
 	Fl_Box::draw();
@@ -395,10 +387,6 @@ void HelpCB(Fl_Widget* w, void* p)
 
 int main()
 {
-	/*Product_Manager pm;
-	Customer c;
-	Sales_Associate sa;
-	Boss b;*/
 	// CREATE WINDOW
 	win = new Fl_Window(720,480,"RoboShop");
 	win->color(FL_WHITE);
@@ -411,7 +399,7 @@ int main()
 		{ "New" },//(Fl_Callback*)NewCB },
 		{ "Open" },//(Fl_Callback*)OpenCB },
 		{ "Save" },//(Fl_Callback*)SaveCB },
-		{ "Save As" },//(Fl_Callback*)SaveAsCB},
+		{ "Save As"},//(Fl_Callback*)SaveAsCB},
 		{ "Help",0,(Fl_Callback*)HelpCB},
 		{ "Quit",0,(Fl_Callback*)QuitCB},
 		{ 0 },
@@ -422,8 +410,8 @@ int main()
 		{ "Sales Report" },//(Fl_Callback*)SalesReportCB },
 		{ "View Orders"},//(Fl_Callback*)OrdersCB },
 		{ "Model Sales" },//(Fl_Callback*)ModelSalesCB },
-		{ "Models Profit"},//(Fl_Callback*)ProfitCB },
-		{ "Create Customer",0,(Fl_Callback*)CreateCustomerCB },
+		{ "Models Profit",0,(Fl_Callback*)ProfitCB,0,FL_MENU_DIVIDER },
+		{ "Create Customer",0,(Fl_Callback*)CreateCustomerCB},
 		{ "Create Sales Associate",0,(Fl_Callback*)CreateSACB },
 		{ 0 },
 		{ "&Sales Associate",0,0,0, FL_SUBMENU },
