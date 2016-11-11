@@ -102,7 +102,23 @@ struct Order
 
 vector <Order> Orders;
 
-string double_to_string(double d)
+struct Customer
+{
+	string cust_no;
+	string cust_name;
+}C;
+
+vector <Customer> Customers;
+
+struct SalesAssociate
+{
+	string sa_no;
+	string sa_name;
+}SA;
+
+vector <SalesAssociate> SalesAssociates;
+
+string double_to_str(double d)
 {
 	char *c;
 	itoa(d,c,10);
@@ -264,25 +280,49 @@ void RoboPartsCB(Fl_Widget* w, void* p)
 	view->redraw();
 }
 
+void Create_Customer_CB(Fl_Widget* w, void* p)
+{
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(0);
+	C.cust_no = temp->value();
+	temp = (Fl_Input*)b->parent()->child(1);
+	C.cust_name = temp->value();
+
+	Customers.push_back(C);
+}
+
 void CreateCustomerCB(Fl_Widget* w, void* p)
 {
-	Fl_Window *win = new Fl_Window(600, 400);
+	Fl_Window *win = new Fl_Window(350, 300);
 	Fl_Input *cust_no = new Fl_Input(150, 50, 100, 30, "Customer No : "); //Child 0
 	Fl_Input *cust_name = new Fl_Input(150, 150, 100, 30, "Customer Name : "); //Child 1
-	Fl_Button *Create = new Fl_Button(100, 300 , 80, 50, "CREATE");
-//	Create->callback(Create_Customer_CB);
+	Fl_Button *Create = new Fl_Button(100, 225 , 80, 50, "CREATE");
+	Create->callback(Create_Customer_CB);
 
 	win->show();
 	view->redraw();
 }
 
+void Create_SA_CB(Fl_Widget* w, void* p)
+{
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(0);
+	SA.sa_no = temp->value();
+	temp = (Fl_Input*)b->parent()->child(1);
+	SA.sa_name = temp->value();
+
+	SalesAssociates.push_back(SA);
+}
+
 void CreateSACB(Fl_Widget* w, void* p)
 {
-	Fl_Window *win = new Fl_Window(600, 400);
-	Fl_Input *cust_no = new Fl_Input(150, 50, 100, 30, "Sales Associate No : "); //Child 0
-	Fl_Input *cust_name = new Fl_Input(150, 150, 100, 30, "Sales Associate Name : "); //Child 1
-	Fl_Button *Create = new Fl_Button(100, 300, 80, 50, "CREATE");
-//	Create->callback(Create_SA_CB);
+	Fl_Window *win = new Fl_Window(350, 300);
+	Fl_Input *cust_no = new Fl_Input(200, 50, 100, 30, "Sales Associate No : "); //Child 0
+	Fl_Input *cust_name = new Fl_Input(200, 150, 100, 30, "Sales Associate Name : "); //Child 1
+	Fl_Button *Create = new Fl_Button(100, 225, 80, 50, "CREATE");
+	Create->callback(Create_SA_CB);
 
 	win->show();
 	view->redraw();
