@@ -385,6 +385,123 @@ void HelpCB(Fl_Widget* w, void* p)
 	view->redraw();
 }
 
+void test_case()
+{
+	R.r_name = "optimus";
+	R.r_no = "101";
+	R.l_cost = 100;
+	R.t_cost = 100;
+	R.a_cost = 100;
+	R.b_cost = 100;
+	R.h_cost = 100;
+	R.r_cost = 500;
+	R.r_price = 800;
+	R.r_profit = 300;
+	R.description = "autobot boss";
+	R.head_name = "op_head";
+	R.head_type = "head";
+	R.head_cost = 100;
+	R.head_weight = 100;
+	R.head_partno = "1";
+	R.torso_name = "op_torso";
+	R.torso_type = "torso";
+	R.torso_cost = 100;
+	R.torso_weight = 100;
+	R.torso_partno = "1";
+	R.arms_name = "op_arms";
+	R.arms_type = "arms";
+	R.arms_cost = 100;
+	R.arms_weight = 100;
+	R.arms_partno = "1";
+	R.battery_name = "op_battery";
+	R.battery_type = "battery";
+	R.battery_cost = 100;
+	R.battery_weight = 100;
+	R.battery_partno = "1";
+	R.locomoter_name = "op_loco";
+	R.locomoter_type = "loco";
+	R.locomoter_cost = 100;
+	R.locomoter_weight = 100;
+	R.locomoter_partno = "1";
+	R.compartments = 4;
+	R.max_speed = 100;
+	R.power_consumed = 100;
+	R.max_power = 100;
+	R.energy = 100;
+	R.no_of_arms = 2;
+	R.arms_power = 100;
+	Robot_Parts.push_back(R);
+	O.order_no = "1";
+	O.cust_no = "1";
+	O.cust_name = "Customer";
+	O.robots_ordered = 1;
+	O.sa_name = "SA";
+	O.sales_date = "01/01/01";
+	O.model_name = "optimus";
+	O.sub_total = 800;
+	O.shipping = 80;
+	O.tax = 64;
+	O.net_total = 944;
+	Order_Details.push_back(O);
+
+	R.r_name = "bumblebee";
+	R.r_no = "102";
+	R.l_cost = 50;
+	R.t_cost = 50;
+	R.a_cost = 50;
+	R.b_cost = 50;
+	R.h_cost = 50;
+	R.r_cost = 250;
+	R.r_price = 750;
+	R.r_profit = 500;
+	R.description = "autobot";
+	R.head_name = "bb_head";
+	R.head_type = "head";
+	R.head_cost = 50;
+	R.head_weight = 50;
+	R.head_partno = "1";
+	R.torso_name = "bb_torso";
+	R.torso_type = "torso";
+	R.torso_cost = 50;
+	R.torso_weight = 50;
+	R.torso_partno = "1";
+	R.compartments = 2;
+	R.locomoter_name = "bb_loco";
+	R.locomoter_type = "loco";
+	R.locomoter_cost = 50;
+	R.locomoter_weight = 50;
+	R.locomoter_partno = "1";
+	R.max_speed = 50;
+	R.power_consumed = 50;
+	R.arms_name = "bb_arms";
+	R.arms_type = "arms";
+	R.arms_cost = 50;
+	R.arms_weight = 50;
+	R.arms_partno = "1";
+	R.no_of_arms = 1;
+	R.arms_power = 50;
+	R.battery_name = "bb_battery";
+	R.battery_type = "battery";
+	R.battery_cost = 50;
+	R.battery_weight = 50;
+	R.battery_partno = "1";
+	R.max_power = 50;
+	R.energy = 50;
+	Robot_Parts.push_back(R);
+	O.order_no = "2";
+	O.cust_no = "2";
+	O.cust_name = "Customer-2";
+	O.robots_ordered = 2;
+	O.sa_name = "SA-2";
+	O.sales_date = "02/02/02";
+	O.model_name = "bumblebee";
+	O.sub_total = 250;
+	O.shipping = 25;
+	O.tax = 25;
+	O.net_total = 300;
+	Order_Details.push_back(O);
+}
+
 int main()
 {
 	// CREATE WINDOW
@@ -393,6 +510,7 @@ int main()
 	view = new View (0, 0, 720, 480);
 	//MAIN MENU
 	menubar = new Fl_Menu_Bar(0, 0, 720, 30);
+	test_case();
 	Fl_Menu_Item menuitems[] =
 	{
 		{ "&File",0,0,0, FL_SUBMENU },
