@@ -387,17 +387,12 @@ void HelpCB(Fl_Widget* w, void* p)
 
 void test_case()
 {
-	R.r_name = "optimus";
+	R.r_name = "Optimus";
 	R.r_no = "101";
-	R.l_cost = 100;
-	R.t_cost = 100;
-	R.a_cost = 100;
-	R.b_cost = 100;
-	R.h_cost = 100;
 	R.r_cost = 500;
 	R.r_price = 800;
 	R.r_profit = 300;
-	R.description = "autobot boss";
+	R.description = "Autobot Boss";
 	R.head_name = "op_head";
 	R.head_type = "head";
 	R.head_cost = 100;
@@ -430,31 +425,27 @@ void test_case()
 	R.energy = 100;
 	R.no_of_arms = 2;
 	R.arms_power = 100;
-	Robot_Parts.push_back(R);
+	Robots.push_back(R);
+
 	O.order_no = "1";
 	O.cust_no = "1";
-	O.cust_name = "Customer";
+	O.cust_name = "Sam";
 	O.robots_ordered = 1;
-	O.sa_name = "SA";
+	O.sa_name = "Simmmons";
 	O.sales_date = "01/01/01";
-	O.model_name = "optimus";
+	O.model_name = "Optimus";
 	O.sub_total = 800;
 	O.shipping = 80;
 	O.tax = 64;
 	O.net_total = 944;
-	Order_Details.push_back(O);
+	Orders.push_back(O);
 
-	R.r_name = "bumblebee";
+	R.r_name = "Bumblebee";
 	R.r_no = "102";
-	R.l_cost = 50;
-	R.t_cost = 50;
-	R.a_cost = 50;
-	R.b_cost = 50;
-	R.h_cost = 50;
 	R.r_cost = 250;
 	R.r_price = 750;
 	R.r_profit = 500;
-	R.description = "autobot";
+	R.description = "Autobot";
 	R.head_name = "bb_head";
 	R.head_type = "head";
 	R.head_cost = 50;
@@ -487,19 +478,36 @@ void test_case()
 	R.battery_partno = "1";
 	R.max_power = 50;
 	R.energy = 50;
-	Robot_Parts.push_back(R);
+	Robots.push_back(R);
+
 	O.order_no = "2";
 	O.cust_no = "2";
-	O.cust_name = "Customer-2";
+	O.cust_name = "Mikaela";
 	O.robots_ordered = 2;
-	O.sa_name = "SA-2";
+	O.sa_name = "William";
 	O.sales_date = "02/02/02";
-	O.model_name = "bumblebee";
+	O.model_name = "Bumblebee";
 	O.sub_total = 250;
 	O.shipping = 25;
 	O.tax = 25;
 	O.net_total = 300;
-	Order_Details.push_back(O);
+	Orders.push_back(O);
+
+	C.cust_no = "1";
+	C.cust_name = "Sam";
+	Customers.push_back(C);
+
+	C.cust_no = "2";
+	C.cust_name = "Mikaela";
+	Customers.push_back(C);
+
+	SA.sa_no = "1";
+	SA.sa_name = "Simmons";
+	SalesAssociates.push_back(SA);
+
+	SA.sa_no = "2";
+	SA.sa_name = "William";
+	SalesAssociates.push_back(SA);
 }
 
 int main()
