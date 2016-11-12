@@ -19,10 +19,64 @@ void OrderCB(Fl_Widget* w, void* p)
 	Fl_Button *Create = new Fl_Button(100, 450, 80, 50, "CREATE");
 	Create->callback(Create_SA_CB);
 
+	 I
+ 	win->show();
+ 	view->redraw();
+
+}
+
+
+
+void Bill_SaleCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *win = new Fl_Window(900, 400);
+	
+	
+	
+
+	win->show();
+ 	view->redraw();
+I
+
+{
+
+
+void SA_Report_CB(Fl_Widget* w, void* p)
+{
+      Fl_Button *b = (Fl_Button*)w;
+      Fl_Input* temp;
+      temp = (Fl_input*)b->parent()->child(0);
+
+	Fl_Window *win = new Fl_Window(600, 400,ÓSales ReportÓ);
+	Fl_Browser *browser = new Fl_Browser(10, 10, 500, 300);
+
+	int widths[] = {50, 50, 50}  //widths for each column
+	browser->column_widths(widths);
+	browser->column_char(Ô\tÕ);
+	browser->type(FL_MULTI_BROWSER);
+	browser->add(ÒSales Associate \t AmountÓ);
+	browser->add(ÒAA \t 11Ó);
+	win->show();
+ 	view->redraw();
+
+}
+
+void SAReportCB(Fl_Widget* w, void* p)
+{
+
+	Fl_Window *win = new Fl_Window(400, 300);
+	Fl_Input *sa_name = new Fl_Input(150, 150, 100, 30, "Sales Associate Name : "); //Child 0
+
+	Fl_Button *Generate = new Fl_Button(100, 250, 80, 50, ÒGENERATEÓ);
+	Generate->callback(SA_Report_CB);
+
 	 
  	win->show();
  	view->redraw();
 
 }
+
+
+
 
 
