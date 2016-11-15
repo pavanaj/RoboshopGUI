@@ -1,0 +1,55 @@
+#include <FL/Fl_Browser.H>
+
+const char* double_to_string(double value)
+{
+	stringstream ss;
+	ss << value;
+	const char* str = ss.str().c_str();
+	return str;
+}
+
+void CatalogCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CW = new Fl_Window(900,300, "Catalog");
+	Fl_Browser *BR = new Fl_Browser(10, 10, CW->w()-20, CW->h()-20 );
+
+	BR->column_char('\t'); // Column delimiter
+	BR->type(FL_MULTI_BROWSER);
+
+	BR->add("String\tDouble");
+
+	vector <string> s;
+	s.push_back("Zero");
+	s.push_back("One");
+	s.push_back("Two");
+	s.push_back("Three");
+	s.push_back("Four");
+
+	vector <double> d;
+	d.push_back(0);
+	d.push_back(1);
+	d.push_back(2);
+	d.push_back(3);
+	d.push_back(4);
+
+	const char *temp;
+	const char *temp2;
+	char *result;
+
+	for (int i = 0; i < 5; i++)
+	{
+		temp = s[i].c_str();
+		temp2 = double_to_string(d[i]);
+
+		strcpy(result, temp);
+		strcat(result, "\t");
+		strcat(result, temp2);
+
+		BR->add(result);
+	}
+
+	CW->resizable(BR);
+	CW->end();
+	CW->show();
+	view->redraw();
+}
