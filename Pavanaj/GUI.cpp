@@ -1,4 +1,4 @@
-// standard io headers
+// standard headers
 #include <iostream>
 #include <fstream>
 #include "std_lib_facilities.h"
@@ -22,7 +22,7 @@ using namespace std;
 #include <Fl/fl_ask.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Output.H>
-#include <cctype>
+#include <FL/Fl_Browser.H>
 
 Fl_Window *win;
 Fl_Menu_Bar *menubar;
@@ -94,6 +94,7 @@ struct Customer
 {
 	string cust_no;
 	string cust_name;
+	string password;
 }C;
 
 vector <Customer> Customers;
@@ -102,16 +103,17 @@ struct SalesAssociate
 {
 	string sa_no;
 	string sa_name;
+	string password;
 }SA;
 
 vector <SalesAssociate> SalesAssociates;
 
-string double_to_str(double d)
+const char* double_to_string(double value)
 {
-	char *c;
-	itoa(d,c,10);
-	string s(c);
-	return s;
+	stringstream ss;
+	ss << value;
+	const char* str = ss.str().c_str();
+	return str;
 }
 
 double str_to_double(string s)
@@ -276,16 +278,19 @@ void Create_Customer_CB(Fl_Widget* w, void* p)
 	C.cust_no = temp->value();
 	temp = (Fl_Input*)b->parent()->child(1);
 	C.cust_name = temp->value();
+	temp = (Fl_Input*)b->parent()->child(2);
+	C.password = temp->value();
 
 	Customers.push_back(C);
 }
 
 void CreateCustomerCB(Fl_Widget* w, void* p)
 {
-	Fl_Window *win = new Fl_Window(350, 300);
+	Fl_Window *win = new Fl_Window(400, 400);
 	Fl_Input *cust_no = new Fl_Input(150, 50, 100, 30, "Customer No : "); //Child 0
 	Fl_Input *cust_name = new Fl_Input(150, 150, 100, 30, "Customer Name : "); //Child 1
-	Fl_Button *Create = new Fl_Button(100, 225 , 80, 50, "CREATE");
+	Fl_Input *cust_pass = new Fl_Input(150, 250, 100, 30, "Password : "); //Child 2
+	Fl_Button *Create = new Fl_Button(150, 300 , 80, 50, "CREATE");
 	Create->callback(Create_Customer_CB);
 
 	win->show();
@@ -300,19 +305,94 @@ void Create_SA_CB(Fl_Widget* w, void* p)
 	SA.sa_no = temp->value();
 	temp = (Fl_Input*)b->parent()->child(1);
 	SA.sa_name = temp->value();
+	temp = (Fl_Input*)b->parent()->child(2);
+	SA.password = temp->value();
 
 	SalesAssociates.push_back(SA);
 }
 
 void CreateSACB(Fl_Widget* w, void* p)
 {
-	Fl_Window *win = new Fl_Window(350, 300);
-	Fl_Input *cust_no = new Fl_Input(200, 50, 100, 30, "Sales Associate No : "); //Child 0
-	Fl_Input *cust_name = new Fl_Input(200, 150, 100, 30, "Sales Associate Name : "); //Child 1
-	Fl_Button *Create = new Fl_Button(100, 225, 80, 50, "CREATE");
+	Fl_Window *win = new Fl_Window(400, 400);
+	Fl_Input *sa_no = new Fl_Input(200, 50, 100, 30, "Sales Associate No : "); //Child 0
+	Fl_Input *sa_name = new Fl_Input(200, 150, 100, 30, "Sales Associate Name : "); //Child 1
+	Fl_Input *sa_pass = new Fl_Input(200, 250, 100, 30, "Password : "); //Child 2
+	Fl_Button *Create = new Fl_Button(200, 350, 80, 50, "CREATE");
 	Create->callback(Create_SA_CB);
 
 	win->show();
+	view->redraw();
+}
+
+void ViewCustomerCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *VC = new Fl_Window(600, 300, "Customers");
+	Fl_Browser *BR = new Fl_Browser(10, 10, 580, 280);
+
+	BR->column_char('\t');
+	BR->type(FL_MULTI_BROWSER);
+
+	BR->add("No. \t Name \t Password");
+
+	const char *temp1;
+	const char *temp2;
+	const char *temp3;
+
+	char *result = "";
+
+	for (int i = 0; i < Customers.size(); i++)
+	{	
+		temp1 = (Customers[i].cust_no).c_str();
+		temp2 = (Customers[i].cust_name).c_str();
+		temp3 = (Customers[i].password).c_str();
+
+		strcpy(result, temp1);
+		strcat(result, " \t ");
+		strcat(result, temp2);
+		strcat(result, " \t ");
+		strcat(result, temp3);
+
+		BR->add(result);
+	}
+
+	VC->resizable(BR);
+	VC->show();
+	view->redraw();
+}
+
+void ViewSACB(Fl_Widget* w, void* p)
+{
+	Fl_Window *VSA = new Fl_Window(600, 300, "Sales Associates");
+	Fl_Browser *BR = new Fl_Browser(10, 10, 550, 250);
+
+	BR->column_char('\t');
+	BR->type(FL_MULTI_BROWSER);
+
+	BR->add("No. \t Name \t Password");
+
+	const char *temp1;
+	const char *temp2;
+	const char *temp3;
+
+	char *result = "";
+
+	for (size_t i = 0; i < SalesAssociates.size(); i++)
+	{
+		temp1 = (SalesAssociates[i].sa_no).c_str();
+		temp2 = (SalesAssociates[i].sa_name).c_str();
+		temp3 = (SalesAssociates[i].password).c_str();
+
+		strcpy(result, temp1);
+		strcat(result, "\t");
+		strcat(result, temp2);
+		strcat(result, "\t");
+		strcat(result, temp3);
+
+		BR->add(result);
+	}
+
+	VSA->resizable(BR);
+	VSA->show();
 	view->redraw();
 }
 
@@ -320,6 +400,12 @@ void ProfitCB(Fl_Widget* w, void* p)
 {
 
 }
+
+void OrdersCB(Fl_Widget* w, void* p)
+{
+
+}
+
 void View::draw()
 {
 	Fl_Box::draw();
@@ -427,19 +513,6 @@ void test_case()
 	R.arms_power = 100;
 	Robots.push_back(R);
 
-	O.order_no = "1";
-	O.cust_no = "1";
-	O.cust_name = "Sam";
-	O.robots_ordered = 1;
-	O.sa_name = "Simmmons";
-	O.sales_date = "01/01/01";
-	O.model_name = "Optimus";
-	O.sub_total = 800;
-	O.shipping = 80;
-	O.tax = 64;
-	O.net_total = 944;
-	Orders.push_back(O);
-
 	R.r_name = "Bumblebee";
 	R.r_no = "102";
 	R.r_cost = 250;
@@ -480,6 +553,19 @@ void test_case()
 	R.energy = 50;
 	Robots.push_back(R);
 
+	O.order_no = "1";
+	O.cust_no = "1";
+	O.cust_name = "Sam";
+	O.robots_ordered = 1;
+	O.sa_name = "Simmmons";
+	O.sales_date = "01/01/01";
+	O.model_name = "Optimus";
+	O.sub_total = 800;
+	O.shipping = 80;
+	O.tax = 64;
+	O.net_total = 944;
+	Orders.push_back(O);
+
 	O.order_no = "2";
 	O.cust_no = "2";
 	O.cust_name = "Mikaela";
@@ -495,18 +581,22 @@ void test_case()
 
 	C.cust_no = "1";
 	C.cust_name = "Sam";
+	C.password = "Sam1";
 	Customers.push_back(C);
 
 	C.cust_no = "2";
 	C.cust_name = "Mikaela";
+	C.password = "Mikaela2";
 	Customers.push_back(C);
 
 	SA.sa_no = "1";
 	SA.sa_name = "Simmons";
+	SA.password = "Simmons1";
 	SalesAssociates.push_back(SA);
 
 	SA.sa_no = "2";
 	SA.sa_name = "William";
+	SA.password = "William2";
 	SalesAssociates.push_back(SA);
 }
 
@@ -534,11 +624,13 @@ int main()
 		{ 0 },
 		{ "&Boss",0,0,0, FL_SUBMENU },
 		{ "Sales Report" },//(Fl_Callback*)SalesReportCB },
-		{ "View Orders"},//(Fl_Callback*)OrdersCB },
-		{ "Model Sales" },//(Fl_Callback*)ModelSalesCB },
-		{ "Models Profit",0,(Fl_Callback*)ProfitCB,0,FL_MENU_DIVIDER },
+		{ "View Orders",0,(Fl_Callback*)OrdersCB,0,FL_MENU_DIVIDER },
+		{ "Model's Sales" },//(Fl_Callback*)ModelSalesCB },
+		{ "Model's Profit",0,(Fl_Callback*)ProfitCB,0,FL_MENU_DIVIDER },
 		{ "Create Customer",0,(Fl_Callback*)CreateCustomerCB},
-		{ "Create Sales Associate",0,(Fl_Callback*)CreateSACB },
+		{ "Create Sales Associate",0,(Fl_Callback*)CreateSACB,0,FL_MENU_DIVIDER },
+		{ "View Customers",0,(Fl_Callback*)ViewCustomerCB },
+		{ "View Sales Associates",0,(Fl_Callback*)ViewSACB },
 		{ 0 },
 		{ "&Sales Associate",0,0,0, FL_SUBMENU },
 		{ "Sales Report" },//(Fl_Callback*)SAReportCB },
