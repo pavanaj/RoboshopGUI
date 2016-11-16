@@ -1,85 +1,98 @@
 
-//since Fl_Text_Display displays only text i converted the double and int values to string so that i can show it on the window.
-//have not declared them in boss.h as i think they should go in GUI.cpp
 
-string dts(double dbl)
+const char* int_to_string(int value)
 {
-	ostringstream strs;
-	strs << dbl;
-	string str = strs.str();
-        return str;
-}
-string its(int in)
-{
-	ostringstream strs;
-	strs << in;
-	string str = strs.str();
+	stringstream ss;
+	ss << value;
+	const char* str = ss.str().c_str();
 	return str;
 }
+// for robots_ordered is an integer
 
-void Boss::OrdersCB(Fl_Widget* w, void* p)
+
+
+
+
+void ProfitCB(Fl_Widget* w, void* p)
 {
-	Fl_Window *order = new Fl_Window(900, 550);
-	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
-	Fl_Text_Display *display = new Fl_Text_Display(20, 20, 900, 550, "ORDERS"); 
-	display->buffer(buff);
-	order->resizable(*display);
-	order->show();
-	buff->text("The following is the list of Orders for Robo shop:\n");
-	for (int i = 0; i < Orders.size(); i++)
+
+	Fl_Window  *win = new Fl_Window(600, 400, "Profit");
+	Fl_Browser *b = new Fl_Browser(10, 10, 500, 300);
+	int widths[] = { 50, 50 };
+	b->column_widths(widths);
+	b->column_char('\t');
+	b->type(FL_MULTI_BROWSER);
+
+
+	const char *one;
+	const char *two;
+	char *result;
+
+	b->add("Robot Name \t Profit ($)");
+
+	for (int i = 0; i < Robots.size(); i++)
 	{
+		one = Robots[i].r_name.c_str();
+		two = double_to_string(Robots[i].r_profit);
+		strcpy(result, one);
+		strcat(result, "\t");
+		strcat(result, two);
+		b->add(result);
 		
-		buff->text(Orders[i].order_no);
-		buff->text("\t");
-		buff->text(Orders[i].cust_name);
-		buff->text("\t");
-		string s1=its(Orders[i].robots_ordered);
-		buff->text(s1);
-		buff->text("\t");
-		buff->text(Orders[i].sa_name);
-		buff->text("\t");
-		buff->text(Orders[i].sales_date);
-		buff->text("\t");
-		buff->text(Orders[i].model_name);
-		buff->text("\t");
-		string s2=dts(Orders[i].net_total);
-		buff->text(s2);
 	}
+
+	win->resizable(b);
+	win->end();
+	win->show();
 	view->redraw();
 }
 
-void Boss::ProfitCB(Fl_Widget* w, void* p)
+
+void OrdersCB(Fl_Widget* w, void* p)
 {
-        double pft;
-	vector<double> rp;
-	Fl_Window *pt = new Fl_Window(900, 550);
-	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
-	Fl_Text_Display *display = new Fl_Text_Display(20, 20, 900, 550, "PROFITS");
-	display->buffer(buff);
-	pt->resizable(*display);
-	pt->show();
-	for (int i = 0; i < Robots.size(); i++)
+	Fl_Window  *win = new Fl_Window(900, 700, "Orders");
+	Fl_Browser *b = new Fl_Browser(10, 10, 800, 500);
+	int widths[] = { 50, 50,50,50,50,50,50 };
+	b->column_widths(widths);
+	b->column_char('\t');
+	b->type(FL_MULTI_BROWSER);
+
+	char *result;
+	const char *s1 ;
+	const char *s2;
+	const char *s3;
+	const char *s4;
+	const char *s5;
+	const char *s6;
+	const char *s7;
+	b->add("Order No  Cust-Name  Robots-Ordered   SA-Name   Sales-Date \t Model-Name \t Net-Total");
+	
+	for (int i = 0; i < Orders.size(); i++)
 	{
-		for (int j = 1; j < Robots.size(); j++)
-		{
-			if (Robots[i].r_name == Robots[j].r_name)
-			{
-				pft = pft + Robots[j].r_profit;
-			}
-			else
-			{
-				pft = Robots[i].r_profit;
-			}
-		}
-		rp.push_back(pft);
-		
-		//buff->text(i);
-		buff->text(". Robot Name : ");
-		buff->text(Robots[i].r_name);
-		buff->text(" Total Profit : ");
-		string s=dts(rp[i]);
-		buff->text(s);
-		buff->text("\n"); 
+		s1 = Orders[i].order_no.c_str();
+		s2 = Orders[i].cust_name.c_str();
+		s3 = int_to_string(Orders[i].robots_ordered);
+		s4= Orders[i].sa_name.c_str();
+		s5= Orders[i].sales_date.c_str();
+		s6= Orders[i].model_name.c_str();
+		s7 = double_to_string(Orders[i].net_total);
+		strcpy(result, s1);
+		strcat(result, "\t\t");
+		strcat(result, s2);
+		strcat(result, "\t\t");
+		strcat(result, s3);
+		strcat(result, "\t\t  ");
+		strcat(result, s4);
+		strcat(result, "\t\t");
+		strcat(result, s5);
+		strcat(result, "\t\t");
+		strcat(result, s6);
+		strcat(result, "\t\t");
+		strcat(result, s7);
+		b->add(result);
 	}
-	view->redraw();
+		win->resizable(b);
+		win->end();
+		win->show();
+		view->redraw();
 }
