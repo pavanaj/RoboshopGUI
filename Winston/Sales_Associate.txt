@@ -40,3 +40,63 @@ void SAReportCB(Fl_Widget* w, void* p)
 	win->show();
 	view->redraw();
 }
+
+void StoreOrderCB(Fl_Widget* w, void* p)
+{
+
+
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	
+	temp = (Fl_Input*)b->parent()->child(0);
+	O.order_no = temp->value();
+
+	temp = (Fl_Input*)b->parent()->child(1);
+	O.cust_no = temp->value();
+
+	temp = (Fl_Input*)b->parent()->child(2);
+	O.cust_name = temp->value();
+
+	temp = (Fl_Input*)b->parent()->child(3);
+	O.robots_ordered = str_to_double(temp->value());
+
+	temp = (Fl_Input*)b->parent()->child(4);
+	O.sa_name = temp->value();
+
+	temp = (Fl_Input*)b->parent()->child(5);
+	O.sales_date = temp->value();
+
+	temp = (Fl_Input*)b->parent()->child(6);
+	O.model_name = temp->value();
+
+	Orders.push_back(O);
+
+
+}
+
+
+
+
+void OrderCB(Fl_Widget* w, void* p)
+{
+
+	Fl_Window *order = new Fl_Window(600, 800, “New Order”);
+
+	Fl_Input *order_no = new Fl_Input(100, 50, 100, 30, “Order Number : "); //Child 0
+	Fl_Input *cust_no = new Fl_Input(150, 50, 100, 30, “Customer Number : "); //Child 1
+	Fl_Input *cust_name = new Fl_Input(200, 50, 100, 30, “Customer Name : "); //Child 2
+	Fl_Input *robots_ordered = new Fl_Input(250, 50, 100, 30, “No. Robots Ordered : "); //Child 3
+	Fl_Input *sa_name = new Fl_Input(300, 50, 100, 30, "Sales Assc. Name : "); //Child 4
+	Fl_Input *sales_date = new Fl_Input(350, 50, 100, 30, "Sales Date : "); //Child 5
+	Fl_Input *model_name = new Fl_Input(400, 50, 100, 30, “Model Name : "); //Child 6
+	
+	Fl_Button *create_order = new Fl_Button(450, 50, 80, 50, “Create Order”);
+	create_order->callback(StoreOrderCB);
+
+	win->show();
+	view->redraw();
+
+	
+}
+
+
