@@ -22,7 +22,7 @@ using namespace std;
 #include <Fl/fl_ask.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Output.H>
-#include <FL/Fl_Browser.H>
+#include <FL/Fl_Multiline_Output.H>
 
 Fl_Window *win;
 Fl_Menu_Bar *menubar;
@@ -108,11 +108,11 @@ struct SalesAssociate
 
 vector <SalesAssociate> SalesAssociates;
 
-const char* double_to_string(double value)
+string double_to_str(double value)
 {
 	stringstream ss;
 	ss << value;
-	const char* str = ss.str().c_str();
+	string str = ss.str();
 	return str;
 }
 
@@ -327,35 +327,22 @@ void CreateSACB(Fl_Widget* w, void* p)
 void ViewCustomerCB(Fl_Widget* w, void* p)
 {
 	Fl_Window *VC = new Fl_Window(600, 300, "Customers");
-	Fl_Browser *BR = new Fl_Browser(10, 10, 580, 280);
+	Fl_Multiline_Output *out = new Fl_Multiline_Output(10, 10, 500, 250);
 
-	BR->column_char('\t');
-	BR->type(FL_MULTI_BROWSER);
+	out->type(FL_MULTILINE_OUTPUT);
+	out->textfont(FL_COURIER);
 
-	BR->add("No. \t Name \t Password");
-
-	const char *temp1;
-	const char *temp2;
-	const char *temp3;
-
-	char *result = "";
+	string result = "No. \t Name \t Password\n";
 
 	for (int i = 0; i < Customers.size(); i++)
-	{	
-		temp1 = (Customers[i].cust_no).c_str();
-		temp2 = (Customers[i].cust_name).c_str();
-		temp3 = (Customers[i].password).c_str();
-
-		strcpy(result, temp1);
-		strcat(result, " \t ");
-		strcat(result, temp2);
-		strcat(result, " \t ");
-		strcat(result, temp3);
-
-		BR->add(result);
+	{
+		result += Customers[i].cust_no + " \t " + Customers[i].cust_name + " \t " + Customers[i].password + "\n";
 	}
 
-	VC->resizable(BR);
+	out->value(result.c_str());
+
+	VC->resizable(out);
+	VC->end();
 	VC->show();
 	view->redraw();
 }
@@ -363,35 +350,22 @@ void ViewCustomerCB(Fl_Widget* w, void* p)
 void ViewSACB(Fl_Widget* w, void* p)
 {
 	Fl_Window *VSA = new Fl_Window(600, 300, "Sales Associates");
-	Fl_Browser *BR = new Fl_Browser(10, 10, 550, 250);
+	Fl_Multiline_Output *out = new Fl_Multiline_Output(10, 10, 500, 250);
 
-	BR->column_char('\t');
-	BR->type(FL_MULTI_BROWSER);
+	out->type(FL_MULTILINE_OUTPUT);
+	out->textfont(FL_COURIER);
 
-	BR->add("No. \t Name \t Password");
+	string result = "No. \t Name \t   Password\n";
 
-	const char *temp1;
-	const char *temp2;
-	const char *temp3;
-
-	char *result = "";
-
-	for (size_t i = 0; i < SalesAssociates.size(); i++)
+	for (int i = 0; i < SalesAssociates.size(); i++)
 	{
-		temp1 = (SalesAssociates[i].sa_no).c_str();
-		temp2 = (SalesAssociates[i].sa_name).c_str();
-		temp3 = (SalesAssociates[i].password).c_str();
-
-		strcpy(result, temp1);
-		strcat(result, "\t");
-		strcat(result, temp2);
-		strcat(result, "\t");
-		strcat(result, temp3);
-
-		BR->add(result);
+		result += SalesAssociates[i].sa_no + " \t " + SalesAssociates[i].sa_name + "   " + SalesAssociates[i].password + "\n";
 	}
 
-	VSA->resizable(BR);
+	out->value(result.c_str());
+
+	VSA->resizable(out);
+	VSA->end();
 	VSA->show();
 	view->redraw();
 }
@@ -646,7 +620,6 @@ int main()
 	};
 
 	menubar->menu(menuitems);
-	//win->resizable(*win);
 	win->end();
 	win->show();
 	return (Fl::run());

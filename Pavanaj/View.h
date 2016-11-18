@@ -1,7 +1,7 @@
 #ifndef __VIEW_H
 #define __VIEW_H
 
-#include <C:\msys\1.0\local\include\FL\Fl_Box.H>
+#include <FL\Fl_Box.H>
 class View : public Fl_Box
 {
 public:

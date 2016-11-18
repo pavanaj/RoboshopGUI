@@ -1,47 +1,38 @@
+string ITS(int value)
 
-
-const char* int_to_string(int value)
 {
+	
 	stringstream ss;
+	
 	ss << value;
-	const char* str = ss.str().c_str();
+	
+	string str = ss.str();
+	
 	return str;
+
 }
-// for robots_ordered is an integer
-
-
-
-
 
 void ProfitCB(Fl_Widget* w, void* p)
 {
 
 	Fl_Window  *win = new Fl_Window(600, 400, "Profit");
-	Fl_Browser *b = new Fl_Browser(10, 10, 500, 300);
-	int widths[] = { 50, 50 };
-	b->column_widths(widths);
-	b->column_char('\t');
-	b->type(FL_MULTI_BROWSER);
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(10, 10, win->w() - 20, win->h() - 20);
 
+	
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
 
-	const char *one;
-	const char *two;
-	char *result;
+	
+	string result = "Robot Name \t Profit ($)\n";
 
-	b->add("Robot Name \t Profit ($)");
 
 	for (int i = 0; i < Robots.size(); i++)
 	{
-		one = Robots[i].r_name.c_str();
-		two = double_to_string(Robots[i].r_profit);
-		strcpy(result, one);
-		strcat(result, "\t");
-		strcat(result, two);
-		b->add(result);
+		result += Robots[i].r_name + " \t " + DTS(Robots[i].r_profit) + "\n";
 		
 	}
-
-	win->resizable(b);
+	BR->value(result.c_str());
+	win->resizable(BR);
 	win->end();
 	win->show();
 	view->redraw();
@@ -50,49 +41,101 @@ void ProfitCB(Fl_Widget* w, void* p)
 
 void OrdersCB(Fl_Widget* w, void* p)
 {
-	Fl_Window  *win = new Fl_Window(900, 700, "Orders");
-	Fl_Browser *b = new Fl_Browser(10, 10, 800, 500);
-	int widths[] = { 50, 50,50,50,50,50,50 };
-	b->column_widths(widths);
-	b->column_char('\t');
-	b->type(FL_MULTI_BROWSER);
+	Fl_Window  *win = new Fl_Window(1000, 980, "Orders");
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(10, 10, win->w() - 20, win->h() - 20);
 
-	char *result;
-	const char *s1 ;
-	const char *s2;
-	const char *s3;
-	const char *s4;
-	const char *s5;
-	const char *s6;
-	const char *s7;
-	b->add("Order No  Cust-Name  Robots-Ordered   SA-Name   Sales-Date \t Model-Name \t Net-Total");
+	
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
+
+	
+	string result = "Order No \tCust-Name \tRobots Ordered \t  SA-Name \t   Sales-Date \t   Model-Name \t\tNet-Total\n";
+
 	
 	for (int i = 0; i < Orders.size(); i++)
 	{
-		s1 = Orders[i].order_no.c_str();
-		s2 = Orders[i].cust_name.c_str();
-		s3 = int_to_string(Orders[i].robots_ordered);
-		s4= Orders[i].sa_name.c_str();
-		s5= Orders[i].sales_date.c_str();
-		s6= Orders[i].model_name.c_str();
-		s7 = double_to_string(Orders[i].net_total);
-		strcpy(result, s1);
-		strcat(result, "\t\t");
-		strcat(result, s2);
-		strcat(result, "\t\t");
-		strcat(result, s3);
-		strcat(result, "\t\t  ");
-		strcat(result, s4);
-		strcat(result, "\t\t");
-		strcat(result, s5);
-		strcat(result, "\t\t");
-		strcat(result, s6);
-		strcat(result, "\t\t");
-		strcat(result, s7);
-		b->add(result);
+		result += Orders[i].order_no + "\t\t" + Orders[i].cust_name + "\t\t" + ITS(Orders[i].robots_ordered) + "\t\t" + Orders[i].sa_name + " \t\t" + Orders[i].sales_date + " \t" + Orders[i].model_name + " \t\t" + DTS(Orders[i].net_total) + "\n";
+
 	}
-		win->resizable(b);
+		BR->value(result.c_str());
+		win->resizable(BR);
 		win->end();
 		win->show();
 		view->redraw();
+}
+
+void ModelSalesCB(Fl_Widget* w, void* p)
+{
+	Fl_Window  *win = new Fl_Window(600, 400, "Model Sales");
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(10, 10, win->w() - 20, win->h() - 20);
+
+	
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
+
+	
+	string result = "Model Name\tRobots Sold\n";
+
+    	int r_sold=0;
+	
+	
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		r_sold = 0;
+		for (int j = 0; j < Orders.size(); j++)
+		{
+			if (Orders[i].model_name==Orders[j].model_name)
+			{
+				r_sold = r_sold + Orders[j].robots_ordered;
+				
+			}
+		}
+		result +=  Orders[i].model_name + "  \t" + ITS(r_sold) + "\n";
+
+	}
+	BR->value(result.c_str());
+	win->resizable(BR);
+	win->end();
+	win->show();
+	view->redraw();
+
+}
+
+void SalesReportCB(Fl_Widget* w, void* p)
+{
+	Fl_Window  *win = new Fl_Window(600, 400, "Sales Report");
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(10, 10, win->w() - 20, win->h() - 20);
+
+	
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
+
+
+	string result = "Name of Sales Associate \tTotal Sales\n";
+
+	double total_sales = 0;
+	string ans;
+	double max;
+	int index_no;
+	int k;
+
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		total_sales = 0;
+		for (int j = 0; j < Orders.size(); j++)
+		{
+			if (Orders[i].sa_name == Orders[j].sa_name)
+			{
+				total_sales = total_sales + Orders[j].net_total;
+			}
+		}
+		result += Orders[i].sa_name + "  \t\t\t" + DTS(total_sales) + "\n";
+	}
+
+	BR->value(result.c_str());
+	win->resizable(BR);
+	win->end();
+	win->show();
+	view->redraw();
+
 }
