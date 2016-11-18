@@ -355,11 +355,11 @@ void ViewSACB(Fl_Widget* w, void* p)
 	out->type(FL_MULTILINE_OUTPUT);
 	out->textfont(FL_COURIER);
 
-	string result = "No. \t Name \t Password\n";
+	string result = "No. \t Name \t   Password\n";
 
 	for (int i = 0; i < SalesAssociates.size(); i++)
 	{
-		result += SalesAssociates[i].sa_no + " \t " + SalesAssociates[i].sa_name + " \t " + SalesAssociates[i].password + "\n";
+		result += SalesAssociates[i].sa_no + " \t " + SalesAssociates[i].sa_name + "   " + SalesAssociates[i].password + "\n";
 	}
 
 	out->value(result.c_str());
@@ -620,7 +620,6 @@ int main()
 	};
 
 	menubar->menu(menuitems);
-	//win->resizable(*win);
 	win->end();
 	win->show();
 	return (Fl::run());
