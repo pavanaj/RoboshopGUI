@@ -1,0 +1,122 @@
+string DTS(double value)
+{
+	stringstream ss;
+	ss << value;
+	string str = ss.str();
+	return str;
+}
+
+string ITS(int value)
+{
+	stringstream ss;
+	ss << value;
+	string str = ss.str();
+	return str;
+}
+
+double STD(string s)
+{
+	const char *c = s.c_str();
+	double d = atoi(c);
+	return d;
+}
+
+void DetailedCatalogCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CW = new Fl_Window(600, 600, "Detailed Catalog");
+	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+	Fl_Text_Display *display = new Fl_Text_Display(10, 10, 600, 600);
+	display->buffer(buff);
+	CW->resizable(*display);
+	CW->show();
+
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(1);
+	string input = temp->value();
+	int n = (int)STD(input);
+
+	string result = "";
+	string d = "";
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		if (i == (n-1))
+		{
+			result += "No.: " + Robots[i].r_no + "\n";
+			result += "Name: " + Robots[i].r_name + "\n";
+			result += "Price: " + DTS(Robots[i].r_price) + "\n";
+			result += "Description: " + Robots[i].description + "\n\n";
+
+			result += d + "Specifications:" + "\n";
+			result += "Name: " + Robots[i].arms_name + "\n";
+			result += "Type: " + Robots[i].arms_type + "\n";
+			result += "Weight: " + DTS(Robots[i].arms_weight) + "\n";
+			result += "Part No.: " + Robots[i].arms_partno + "\n\n";
+
+			result += d + "Torso Specifications:" + "\n";
+			result += "Name: " + Robots[i].torso_name + "\n";
+			result += "Type: " + Robots[i].torso_type + "\n";
+			result += "Weight: " + DTS(Robots[i].torso_weight) + "\n";
+			result += "Part No.: " + Robots[i].torso_partno + "\n";
+			result += "Compartments: " + DTS(Robots[i].compartments) + "\n\n";
+
+			result += d + "Locomoter Specifications:" + "\n";
+			result += "Name: " + Robots[i].locomoter_name + "\n";
+			result += "Type: " + Robots[i].locomoter_type + "\n";
+			result += "Weight: " + DTS(Robots[i].locomoter_weight) + "\n";
+			result += "Part No.: " + Robots[i].locomoter_partno + "\n";
+			result += "Max. Speed: " + Robots[i].locomoter_partno + "\n";
+			result += "Power Consumed: " + Robots[i].locomoter_partno + "\n\n";
+
+			result += d + "Battery Specifications:" + "\n";
+			result += "Name: " + Robots[i].battery_name + "\n";
+			result += "Type: " + Robots[i].battery_type + "\n";
+			result += "Weight: " + DTS(Robots[i].battery_weight) + "\n";
+			result += "Part No.: " + Robots[i].battery_partno + "\n";
+			result += "Max. Power: " + DTS(Robots[i].max_power) + "\n";
+			result += "Energy: " + DTS(Robots[i].energy) + "\n\n";
+
+			result += d + "Arm Specifications:" + "\n";
+			result += "Name: " + Robots[i].arms_name + "\n";
+			result += "Type: " + Robots[i].arms_type + "\n";
+			result += "Weight: " + DTS(Robots[i].arms_weight) + "\n";
+			result += "Part No.: " + Robots[i].arms_partno + "\n";
+			result += "No.: " + DTS(Robots[i].no_of_arms) + "\n";
+			result += "Power Consumed: " + DTS(Robots[i].arms_power);
+		}
+	}
+
+	buff->text(result.c_str());
+
+	CW->end();
+	view->redraw();
+}
+
+void CatalogCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CW = new Fl_Window(600, 600, "Catalog");
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(0, 0, 600, 300);
+
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
+
+	string result = "No.\tModel No.\tName\t\tPrice\tDescription\t\n";	
+	string s;
+
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		s = ITS(i+1);
+		result += s + "\t" + Robots[i].r_no + "\t" + Robots[i].r_name + "\t\t" + DTS(Robots[i].r_price) + "\t" + Robots[i].description + "\n";
+	}
+
+	BR->value(result.c_str());
+
+	Fl_Input *detcat = new Fl_Input(350, 350, 100, 30, "Detailed Catalog Model No : ");
+	Fl_Button *Enter = new Fl_Button(300, 400, 80, 30, "ENTER");
+	Enter->callback(DetailedCatalogCB);
+
+	CW->resizable(BR);
+	CW->end();
+	CW->show();
+	view->redraw();
+}
