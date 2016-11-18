@@ -68,6 +68,18 @@ void StoreOrderCB(Fl_Widget* w, void* p)
 
 	temp = (Fl_Input*)b->parent()->child(6);
 	O.model_name = temp->value();
+	
+	for (int i = 0; i <= Robots.size(); i++)
+	{
+		if (O.model_name == Robots[i].r_name)
+		{
+			O.sub_total = Robots[i].r_price*O.robots_ordered;
+		}
+	}
+
+	O.shipping = O.sub_total*0.10;
+	O.tax = O.sub_total*.0825;
+	O.net_total = O.sub_total + O.shipping + O.tax;
 
 	Orders.push_back(O);
 
@@ -93,7 +105,7 @@ void OrderCB(Fl_Widget* w, void* p)
 	Fl_Button *create_order = new Fl_Button(450, 50, 80, 50, “Create Order”);
 	create_order->callback(StoreOrderCB);
 
-	win->show();
+	order->show();
 	view->redraw();
 
 	
