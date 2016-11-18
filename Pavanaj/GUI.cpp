@@ -447,20 +447,14 @@ void SalesReportCB(Fl_Widget* w, void* p)
 {
 	Fl_Window  *win = new Fl_Window(600, 400, "Sales Report");
 	Fl_Multiline_Output *BR = new Fl_Multiline_Output(10, 10, win->w() - 20, win->h() - 20);
-
-
 	BR->type(FL_MULTILINE_OUTPUT);
 	BR->textfont(FL_COURIER);
-
-
 	string result = "Name of Sales Associate \tTotal Sales\n";
-
 	double total_sales = 0;
 	string ans;
 	double max;
 	int index_no;
 	int k;
-
 	for (int i = 0; i < Orders.size(); i++)
 	{
 		total_sales = 0;
@@ -473,13 +467,11 @@ void SalesReportCB(Fl_Widget* w, void* p)
 		}
 		result += Orders[i].sa_name + "  \t\t\t" + DTS(total_sales) + "\n";
 	}
-
 	BR->value(result.c_str());
 	win->resizable(BR);
 	win->end();
 	win->show();
 	view->redraw();
-
 }
 
 void ModelSalesCB(Fl_Widget* w, void* p)
@@ -668,7 +660,6 @@ void CustOCB(Fl_Widget* w, void* p)
 	view->redraw();
 }
 
-
 void CustOrderCB(Fl_Widget* w, void* p)
 {
 	Fl_Window *CW = new Fl_Window(300, 150, "Order");
@@ -682,9 +673,13 @@ void CustOrderCB(Fl_Widget* w, void* p)
 
 void ImageCB(Fl_Widget* w, void* p)
 {
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(1);
+	string sa_name = temp->value();
 	fl_register_images();
-	Fl_Window *win = new Fl_Window(300, 300);
-	Fl_JPEG_Image *jpg = new Fl_JPEG_Image("image.jpg");
+	Fl_Window *win = new Fl_Window(600, 600);
+	Fl_JPEG_Image *jpg = new Fl_JPEG_Image("Optimus.jpg");
 	Fl_Box *box = new Fl_Box(0, 0, win->w(), win->h());
 	box->image(*jpg);
 	win->show();
