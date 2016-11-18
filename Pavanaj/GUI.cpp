@@ -23,6 +23,8 @@ using namespace std;
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Multiline_Output.H>
+#include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Scroll.H>
 
 Fl_Window *win;
 Fl_Menu_Bar *menubar;
@@ -117,6 +119,29 @@ string double_to_str(double value)
 }
 
 double str_to_double(string s)
+{
+	const char *c = s.c_str();
+	double d = atoi(c);
+	return d;
+}
+
+string DTS(double value)
+{
+	stringstream ss;
+	ss << value;
+	string str = ss.str();
+	return str;
+}
+
+string ITS(int value)
+{
+	stringstream ss;
+	ss << value;
+	string str = ss.str();
+	return str;
+}
+
+double STD(string s)
 {
 	const char *c = s.c_str();
 	double d = atoi(c);
@@ -286,7 +311,7 @@ void Create_Customer_CB(Fl_Widget* w, void* p)
 
 void CreateCustomerCB(Fl_Widget* w, void* p)
 {
-	Fl_Window *win = new Fl_Window(400, 400);
+	Fl_Window *win = new Fl_Window(400, 400,"Create Customer");
 	Fl_Input *cust_no = new Fl_Input(150, 50, 100, 30, "Customer No : "); //Child 0
 	Fl_Input *cust_name = new Fl_Input(150, 150, 100, 30, "Customer Name : "); //Child 1
 	Fl_Input *cust_pass = new Fl_Input(150, 250, 100, 30, "Password : "); //Child 2
@@ -313,7 +338,7 @@ void Create_SA_CB(Fl_Widget* w, void* p)
 
 void CreateSACB(Fl_Widget* w, void* p)
 {
-	Fl_Window *win = new Fl_Window(400, 400);
+	Fl_Window *win = new Fl_Window(400, 400,"Create SA");
 	Fl_Input *sa_no = new Fl_Input(200, 50, 100, 30, "Sales Associate No : "); //Child 0
 	Fl_Input *sa_name = new Fl_Input(200, 150, 100, 30, "Sales Associate Name : "); //Child 1
 	Fl_Input *sa_pass = new Fl_Input(200, 250, 100, 30, "Password : "); //Child 2
@@ -372,12 +397,442 @@ void ViewSACB(Fl_Widget* w, void* p)
 
 void ProfitCB(Fl_Widget* w, void* p)
 {
+	Fl_Window  *win = new Fl_Window(600, 400, "Profit");
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(10, 10, win->w() - 20, win->h() - 20);
 
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
+	string result = "Robot Name \t Profit ($)\n";
+
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		result += Robots[i].r_name + " \t " + DTS(Robots[i].r_profit) + "\n";
+	}
+	BR->value(result.c_str());
+	win->resizable(BR);
+	win->end();
+	win->show();
+	view->redraw();
 }
 
 void OrdersCB(Fl_Widget* w, void* p)
 {
+	Fl_Window  *win = new Fl_Window(1000, 500, "Orders");
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(10, 10, win->w() - 20, win->h() - 20);
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
+	string result = "Order No \tCust-Name \tRobots Ordered \t  SA-Name \t   Sales-Date \t   Model-Name \t\tNet-Total\n";
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		result += Orders[i].order_no + "\t\t" + Orders[i].cust_name + "\t\t" + ITS(Orders[i].robots_ordered) + "\t\t" + Orders[i].sa_name + " \t\t" + Orders[i].sales_date + " \t" + Orders[i].model_name + " \t\t" + DTS(Orders[i].net_total) + "\n";
+	}
+	BR->value(result.c_str());
+	win->resizable(BR);
+	win->end();
+	win->show();
+	view->redraw();
+}
 
+void OpenCB(Fl_Widget* w, void* p)
+{
+
+}
+
+void SaveCB(Fl_Widget* w, void* p)
+{
+
+}
+
+void SalesReportCB(Fl_Widget* w, void* p)
+{
+	Fl_Window  *win = new Fl_Window(600, 400, "Sales Report");
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(10, 10, win->w() - 20, win->h() - 20);
+
+
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
+
+
+	string result = "Name of Sales Associate \tTotal Sales\n";
+
+	double total_sales = 0;
+	string ans;
+	double max;
+	int index_no;
+	int k;
+
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		total_sales = 0;
+		for (int j = 0; j < Orders.size(); j++)
+		{
+			if (Orders[i].sa_name == Orders[j].sa_name)
+			{
+				total_sales = total_sales + Orders[j].net_total;
+			}
+		}
+		result += Orders[i].sa_name + "  \t\t\t" + DTS(total_sales) + "\n";
+	}
+
+	BR->value(result.c_str());
+	win->resizable(BR);
+	win->end();
+	win->show();
+	view->redraw();
+
+}
+
+void ModelSalesCB(Fl_Widget* w, void* p)
+{
+	Fl_Window  *win = new Fl_Window(600, 400, "Model Sales");
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(10, 10, win->w() - 20, win->h() - 20);
+
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
+
+	string result = "Model Name\tRobots Sold\n";
+
+	int r_sold = 0;
+
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		r_sold = 0;
+		for (int j = 0; j < Orders.size(); j++)
+		{
+			if (Orders[i].model_name == Orders[j].model_name)
+			{
+				r_sold = r_sold + Orders[j].robots_ordered;
+			}
+		}
+		result += Orders[i].model_name + "  \t" + ITS(r_sold) + "\n";
+	}
+	BR->value(result.c_str());
+	win->resizable(BR);
+	win->end();
+	win->show();
+	view->redraw();
+}
+
+void StoreOrderCB(Fl_Widget* w, void* p)
+{
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(0);
+	O.order_no = temp->value();
+
+	temp = (Fl_Input*)b->parent()->child(1);
+	O.cust_no = temp->value();
+
+	temp = (Fl_Input*)b->parent()->child(2);
+	O.cust_name = temp->value();
+
+	temp = (Fl_Input*)b->parent()->child(3);
+	O.robots_ordered = str_to_double(temp->value());
+
+	temp = (Fl_Input*)b->parent()->child(4);
+	O.sa_name = temp->value();
+
+	temp = (Fl_Input*)b->parent()->child(5);
+	O.sales_date = temp->value();
+
+	temp = (Fl_Input*)b->parent()->child(6);
+	O.model_name = temp->value();
+
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		if (O.model_name == Robots[i].r_name)
+		{
+			O.sub_total = Robots[i].r_price*O.robots_ordered;
+		}
+	}
+
+	O.shipping = O.sub_total*0.10;
+	O.tax = O.sub_total*.08;
+	O.net_total = O.sub_total + O.shipping + O.tax;
+
+
+	Orders.push_back(O);
+
+}
+
+void OrderCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *order = new Fl_Window(300, 500, "New Order");
+	Fl_Input *order_no = new Fl_Input(150, 50, 100, 30, "Order Number : "); //Child 0
+	Fl_Input *cust_no = new Fl_Input(150, 100, 100, 30, "Customer Number : "); //Child 1
+	Fl_Input *cust_name = new Fl_Input(150, 150, 100, 30, "Customer Name : "); //Child 2
+	Fl_Input *robots_ordered = new Fl_Input(150, 200, 100, 30, "No.Robots Ordered : "); //Child 3
+	Fl_Input *sa_name = new Fl_Input(150, 250, 100, 30, "Sales Assc. Name : "); //Child 4
+	Fl_Input *sales_date = new Fl_Input(150, 300, 100, 30, "Sales Date : "); //Child 5
+	Fl_Input *model_name = new Fl_Input(150, 350, 100, 30, "Model Name : "); //Child 6
+	Fl_Button *create_order = new Fl_Button(150, 425, 100, 50, "Create Order"); 
+	create_order->callback(StoreOrderCB);
+	order->show();
+	order->resizable(order);
+	view->redraw();
+}
+
+void BillCB(Fl_Widget* w, void* p)
+{
+
+}
+
+void CustBCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CW = new Fl_Window(500, 500, "Customer Bill");
+	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+	Fl_Text_Display *display = new Fl_Text_Display(10, 10, 500, 500);
+	display->buffer(buff);
+	CW->resizable(*display);
+	CW->show();
+
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(0);
+	string input = temp->value();
+	int n = (int)STD(input);
+
+	string result = "";
+	string d = "";
+	double order_total = 0;
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		if (i == (n - 1))
+		{
+			order_total += Orders[i].net_total;
+			result += "Order No.: " + Orders[i].order_no + "\n";
+			result += "Customer Name: " + Orders[i].cust_name + "\n";
+			result += "Model Name: " + Orders[i].model_name + "\n";
+			result += "Robots Ordered: " + DTS(Orders[i].robots_ordered) + "\n";
+			result += "Sub-Total: $" + DTS(Orders[i].sub_total) + "\n";
+			result += "Shipping: $" + DTS(Orders[i].shipping) + "\n";
+			result += "Tax: $" + DTS(Orders[i].tax) + "\n";
+			result += "Total: $" + DTS(Orders[i].net_total) + "\n\n";
+		}
+	}
+	result += "Total Bill Amount: $" + DTS(order_total);
+	buff->text(result.c_str());
+	CW->end();
+	view->redraw();
+}
+
+void CustBillCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CW = new Fl_Window(300, 150, "Bill");
+	Fl_Input *cno = new Fl_Input(150, 50, 100, 30, "Customer Number :");
+	Fl_Button *Enter = new Fl_Button(150, 100, 80, 30, "Enter");
+	Enter->callback(CustBCB);
+	CW->end();
+	CW->show();
+	view->redraw();
+}
+
+void CustOCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CW = new Fl_Window(500, 500, "Customer Order");
+	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+	Fl_Text_Display *display = new Fl_Text_Display(10, 10, 500, 500);
+	display->buffer(buff);
+	CW->resizable(*display);
+	CW->show();
+
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(0);
+	string input = temp->value();
+	int n = (int)STD(input);
+
+	string result = "";
+	string d = "";
+
+	double order_total = 0;
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		if (i == (n - 1))
+		{
+			order_total += Orders[i].net_total;
+			result += "Order No.: " + Orders[i].order_no + "\n";
+			result += "Order Date: " + Orders[i].sales_date + "\n";
+			result += "SA Name: " + Orders[i].sa_name + "\n";
+			result += "Model Name: " + Orders[i].model_name + "\n";
+			result += "Robots Ordered: " + DTS(Orders[i].robots_ordered) + "\n";
+			result += "Sub-Total: $" + DTS(Orders[i].sub_total) + "\n";
+			result += "Shipping: $" + DTS(Orders[i].shipping) + "\n";
+			result += "Tax: $" + DTS(Orders[i].tax) + "\n";
+			result += "Total: $" + DTS(Orders[i].net_total) + "\n\n";
+		}
+	}
+	result += "Total Order Amount: $" + DTS(order_total);
+	buff->text(result.c_str());
+	CW->end();
+	view->redraw();
+}
+
+
+void CustOrderCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CW = new Fl_Window(300, 150, "Order");
+	Fl_Input *cno = new Fl_Input(150, 50, 100, 30, "Customer Number :");
+	Fl_Button *Enter = new Fl_Button(150, 100, 80, 30, "Enter");
+	Enter->callback(CustOCB);
+	CW->end();
+	CW->show();
+	view->redraw();
+}
+
+void ImageCB(Fl_Widget* w, void* p)
+{
+	fl_register_images();
+	Fl_Window *win = new Fl_Window(300, 300);
+	Fl_JPEG_Image *jpg = new Fl_JPEG_Image("image.jpg");
+	Fl_Box *box = new Fl_Box(0, 0, win->w(), win->h());
+	box->image(*jpg);
+	win->show();
+	view->redraw();
+}
+
+void DetailedCatalogCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CW = new Fl_Window(600, 600, "Detailed Catalog");
+	Fl_Text_Buffer *buff = new Fl_Text_Buffer();
+	Fl_Text_Display *display = new Fl_Text_Display(10, 10, 600, 600);
+	display->buffer(buff);
+	CW->resizable(*display);
+	CW->show();
+
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(1);
+	string input = temp->value();
+	int n = (int)STD(input);
+
+	string result = "";
+	string d = "";
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		if (i == (n - 1))
+		{
+			result += "No.: " + Robots[i].r_no + "\n";
+			result += "Name: " + Robots[i].r_name + "\n";
+			result += "Price: " + DTS(Robots[i].r_price) + "\n";
+			result += "Description: " + Robots[i].description + "\n\n";
+
+			result += d + "Specifications:" + "\n";
+			result += "Name: " + Robots[i].arms_name + "\n";
+			result += "Type: " + Robots[i].arms_type + "\n";
+			result += "Weight: " + DTS(Robots[i].arms_weight) + "\n";
+			result += "Part No.: " + Robots[i].arms_partno + "\n\n";
+
+			result += d + "Torso Specifications:" + "\n";
+			result += "Name: " + Robots[i].torso_name + "\n";
+			result += "Type: " + Robots[i].torso_type + "\n";
+			result += "Weight: " + DTS(Robots[i].torso_weight) + "\n";
+			result += "Part No.: " + Robots[i].torso_partno + "\n";
+			result += "Compartments: " + DTS(Robots[i].compartments) + "\n\n";
+
+			result += d + "Locomoter Specifications:" + "\n";
+			result += "Name: " + Robots[i].locomoter_name + "\n";
+			result += "Type: " + Robots[i].locomoter_type + "\n";
+			result += "Weight: " + DTS(Robots[i].locomoter_weight) + "\n";
+			result += "Part No.: " + Robots[i].locomoter_partno + "\n";
+			result += "Max. Speed: " + Robots[i].locomoter_partno + "\n";
+			result += "Power Consumed: " + Robots[i].locomoter_partno + "\n\n";
+
+			result += d + "Battery Specifications:" + "\n";
+			result += "Name: " + Robots[i].battery_name + "\n";
+			result += "Type: " + Robots[i].battery_type + "\n";
+			result += "Weight: " + DTS(Robots[i].battery_weight) + "\n";
+			result += "Part No.: " + Robots[i].battery_partno + "\n";
+			result += "Max. Power: " + DTS(Robots[i].max_power) + "\n";
+			result += "Energy: " + DTS(Robots[i].energy) + "\n\n";
+
+			result += d + "Arm Specifications:" + "\n";
+			result += "Name: " + Robots[i].arms_name + "\n";
+			result += "Type: " + Robots[i].arms_type + "\n";
+			result += "Weight: " + DTS(Robots[i].arms_weight) + "\n";
+			result += "Part No.: " + Robots[i].arms_partno + "\n";
+			result += "No.: " + DTS(Robots[i].no_of_arms) + "\n";
+			result += "Power Consumed: " + DTS(Robots[i].arms_power);
+		}
+	}
+
+	buff->text(result.c_str());
+
+	CW->end();
+	view->redraw();
+}
+
+void CatalogCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CW = new Fl_Window(600, 500, "Catalog");
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(0, 0, 600, 300); // Child 0
+
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
+
+	string result = "No.\tModel No.\tName\t\tPrice\tDescription\t\n";
+	string s;
+
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		s = ITS(i + 1);
+		result += s + "\t" + Robots[i].r_no + "\t" + Robots[i].r_name + "\t\t" + DTS(Robots[i].r_price) + "\t" + Robots[i].description + "\n";
+	}
+
+	BR->value(result.c_str());
+
+	Fl_Input *detcat = new Fl_Input(250, 350, 100, 30, "Model No : "); // Child 1
+	Fl_Button *Enter = new Fl_Button(200, 400, 100, 50, "DETAILS"); 
+	Fl_Button *img = new Fl_Button(400, 400, 100, 50, "IMAGE");
+	Enter->callback(DetailedCatalogCB);
+	img->callback(ImageCB);
+
+	CW->resizable(BR);
+	CW->end();
+	CW->show();
+	view->redraw();
+}
+
+void GenerateSAR(Fl_Widget* w, void* p)
+{
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(0);
+	string sa_name = temp->value();
+
+	Fl_Window *Report = new Fl_Window(600, 300, "My Report");
+	Fl_Multiline_Output *out = new Fl_Multiline_Output(10, 10, 500, 250);
+
+	out->type(FL_MULTILINE_OUTPUT);
+	out->textfont(FL_COURIER);
+
+	string result = sa_name + "\n";
+	result += "Customer Name\t Date\t Amount\n";
+
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		if (sa_name == Orders[i].sa_name)
+		{
+			result += Orders[i].cust_name + "\t" + Orders[i].sales_date + "\t" + double_to_str(Orders[i].net_total) + "\n";
+		}
+	}
+
+	out->value(result.c_str());
+
+	Report->resizable(out);
+	Report->end();
+	Report->show();
+	view->redraw();
+}
+
+void SAReportCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *win = new Fl_Window(220, 220,"SA Report");
+	Fl_Input *sa_no = new Fl_Input(100, 50, 100, 30, "SA Name : "); //Child 0
+	Fl_Button *Generate = new Fl_Button(50, 125, 80, 50, "Generate");
+	Generate->callback(GenerateSAR);
+	win->show();
+	view->redraw();
 }
 
 void View::draw()
@@ -445,7 +900,7 @@ void HelpCB(Fl_Widget* w, void* p)
 	view->redraw();
 }
 
-void test_case()
+void NewCB(Fl_Widget* w, void* p)
 {
 	R.r_name = "Optimus";
 	R.r_no = "101";
@@ -531,7 +986,7 @@ void test_case()
 	O.cust_no = "1";
 	O.cust_name = "Sam";
 	O.robots_ordered = 1;
-	O.sa_name = "Simmmons";
+	O.sa_name = "Simmons";
 	O.sales_date = "01/01/01";
 	O.model_name = "Optimus";
 	O.sub_total = 800;
@@ -582,14 +1037,12 @@ int main()
 	view = new View (0, 0, 720, 480);
 	//MAIN MENU
 	menubar = new Fl_Menu_Bar(0, 0, 720, 30);
-	test_case();
 	Fl_Menu_Item menuitems[] =
 	{
 		{ "&File",0,0,0, FL_SUBMENU },
-		{ "New" },//(Fl_Callback*)NewCB },
-		{ "Open" },//(Fl_Callback*)OpenCB },
-		{ "Save" },//(Fl_Callback*)SaveCB },
-		{ "Save As"},//(Fl_Callback*)SaveAsCB},
+		{ "New",0,(Fl_Callback*)NewCB,0,FL_MENU_DIVIDER },
+		{ "Open",0,(Fl_Callback*)OpenCB },
+		{ "Save",0,(Fl_Callback*)SaveCB,0,FL_MENU_DIVIDER },
 		{ "Help",0,(Fl_Callback*)HelpCB},
 		{ "Quit",0,(Fl_Callback*)QuitCB},
 		{ 0 },
@@ -597,9 +1050,9 @@ int main()
 		{ "Create RoboParts",0,(Fl_Callback*)RoboPartsCB },
 		{ 0 },
 		{ "&Boss",0,0,0, FL_SUBMENU },
-		{ "Sales Report" },//(Fl_Callback*)SalesReportCB },
+		{ "Sales Report",0,(Fl_Callback*)SalesReportCB },
 		{ "View Orders",0,(Fl_Callback*)OrdersCB,0,FL_MENU_DIVIDER },
-		{ "Model's Sales" },//(Fl_Callback*)ModelSalesCB },
+		{ "Model's Sales",0,(Fl_Callback*)ModelSalesCB },
 		{ "Model's Profit",0,(Fl_Callback*)ProfitCB,0,FL_MENU_DIVIDER },
 		{ "Create Customer",0,(Fl_Callback*)CreateCustomerCB},
 		{ "Create Sales Associate",0,(Fl_Callback*)CreateSACB,0,FL_MENU_DIVIDER },
@@ -607,18 +1060,17 @@ int main()
 		{ "View Sales Associates",0,(Fl_Callback*)ViewSACB },
 		{ 0 },
 		{ "&Sales Associate",0,0,0, FL_SUBMENU },
-		{ "Sales Report" },//(Fl_Callback*)SAReportCB },
-		{ "Create Order" },//(Fl_Callback*)OrderCB },
-		{ "Create Bill" },//(Fl_Callback*)BillCB },
+		{ "Sales Report",0,(Fl_Callback*)SAReportCB },
+		{ "Create Order",0,(Fl_Callback*)OrderCB },
+		{ "Create Bill",0,(Fl_Callback*)BillCB },
 		{ 0 },
 		{ "&Customer",0,0,0, FL_SUBMENU },
-		{ "View Catalog" },//(Fl_Callback*)CatalogCB },
-		{ "View Bills" },//(Fl_Callback*)CustBillCB },
-		{ "View Orders" },//(Fl_Callback*)CustOrderCB },
+		{ "View Catalog",0,(Fl_Callback*)CatalogCB },
+		{ "View Bills",0,(Fl_Callback*)CustBillCB },
+		{ "View Orders",0,(Fl_Callback*)CustOrderCB },
 		{ 0 },
 		{ 0 }
 	};
-
 	menubar->menu(menuitems);
 	win->end();
 	win->show();
