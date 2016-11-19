@@ -35,6 +35,7 @@ struct Robot
 	string r_name;
 	string r_no;
 	string description;
+	string image;
 	double r_cost;
 	double r_price;
 	double r_profit;
@@ -240,6 +241,8 @@ void EnterRoboPartsCB(Fl_Widget* w, void* p)
 	temp = (Fl_Input*)b->parent()->child(34);
 	s = temp->value();
 	R.no_of_arms = str_to_double(s);
+	temp = (Fl_Input*)b->parent()->child(35);
+	R.image = temp->value();
 	Robots.push_back(R);
 }
 
@@ -288,7 +291,8 @@ void RoboPartsCB(Fl_Widget* w, void* p)
 	Fl_Input *armspower = new Fl_Input(450, 550, 100, 30, "Arms Power : ");//Child 33
 	Fl_Input *noofarms = new Fl_Input(150, 600, 100, 30, "Arms Number : ");//Child 34
 
-	Fl_Button *Enter = new Fl_Button(525, 625, 80, 50, "ENTER");
+	Fl_Input *image = new Fl_Input(450, 600, 100, 30, "Image : "); //Child 35
+	Fl_Button *Enter = new Fl_Button(625, 625, 100, 50, "ENTER");
 	Enter->callback(EnterRoboPartsCB);
 	
 	CRP->show();
@@ -564,9 +568,49 @@ void OrderCB(Fl_Widget* w, void* p)
 	view->redraw();
 }
 
+void GenerateBill(Fl_Widget* w, void* p)
+{
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(0);
+	string order_no = temp->value();
+
+	Fl_Window *Bill = new Fl_Window(700, 300, "Bill of Sale");
+	Fl_Multiline_Output *out = new Fl_Multiline_Output(10, 10, 600, 250);
+
+	out->type(FL_MULTILINE_OUTPUT);
+
+	string result = "";
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		if (order_no == Orders[i].order_no)
+		{
+			result += "Order No.: " + Orders[i].order_no + "\n";
+			result += "Customer Name: " + Orders[i].cust_name + "\n";
+			result += "Model Name: " + Orders[i].model_name + "\n";
+			result += "Robots Ordered: " + DTS(Orders[i].robots_ordered) + "\n";
+			result += "Sub-Total: $" + DTS(Orders[i].sub_total) + "\n";
+			result += "Shipping: $" + DTS(Orders[i].shipping) + "\n";
+			result += "Tax: $" + DTS(Orders[i].tax) + "\n";
+			result += "Total: $" + DTS(Orders[i].net_total) + "\n\n";
+		}
+	}
+
+	out->value(result.c_str());
+	Bill->resizable(out);
+	Bill->end();
+	Bill->show();
+	view->redraw();
+}
+
 void BillCB(Fl_Widget* w, void* p)
 {
-
+	Fl_Window *win = new Fl_Window(300, 200, "Search Orders");
+	Fl_Input *order_no = new Fl_Input(150, 50, 100, 30, "Enter order No. : "); //Child 0
+	Fl_Button *Generate = new Fl_Button(150, 100, 80, 50, "Generate");
+	Generate->callback(GenerateBill);
+	win->show();
+	view->redraw();
 }
 
 void CustBCB(Fl_Widget* w, void* p)
@@ -676,11 +720,11 @@ void ImageCB(Fl_Widget* w, void* p)
 	Fl_Button* b = (Fl_Button*)w;
 	Fl_Input* temp;
 	temp = (Fl_Input*)b->parent()->child(1);
-	string sa_name = temp->value();
+	int no = STD(temp->value());	
 	fl_register_images();
 	Fl_Window *win = new Fl_Window(600, 600);
-	Fl_JPEG_Image *jpg = new Fl_JPEG_Image("Optimus.jpg");
-	Fl_Box *box = new Fl_Box(0, 0, win->w(), win->h());
+	Fl_JPEG_Image *jpg = new Fl_JPEG_Image((Robots[(no - 1)].image).c_str());
+	Fl_Box *box = new Fl_Box(0, 0, 600, 600);
 	box->image(*jpg);
 	win->show();
 	view->redraw();
@@ -765,18 +809,18 @@ void CatalogCB(Fl_Widget* w, void* p)
 	BR->type(FL_MULTILINE_OUTPUT);
 	BR->textfont(FL_COURIER);
 
-	string result = "No.\tModel No.\tName\t\tPrice\tDescription\t\n";
+	string result = "No.\tModel No.\tName\t\t\tPrice\tDescription\t\n";
 	string s;
 
 	for (int i = 0; i < Robots.size(); i++)
 	{
 		s = ITS(i + 1);
-		result += s + "\t" + Robots[i].r_no + "\t" + Robots[i].r_name + "\t\t" + DTS(Robots[i].r_price) + "\t" + Robots[i].description + "\n";
+		result += s + "\t" + Robots[i].r_no + "\t\t" + Robots[i].r_name + "\t\t" + DTS(Robots[i].r_price) + "\t" + Robots[i].description + "\n";
 	}
 
 	BR->value(result.c_str());
 
-	Fl_Input *detcat = new Fl_Input(250, 350, 100, 30, "Model No : "); // Child 1
+	Fl_Input *detcat = new Fl_Input(250, 350, 100, 30, "Serial No : "); // Child 1
 	Fl_Button *Enter = new Fl_Button(200, 400, 100, 50, "DETAILS"); 
 	Fl_Button *img = new Fl_Button(400, 400, 100, 50, "IMAGE");
 	Enter->callback(DetailedCatalogCB);
@@ -897,12 +941,13 @@ void HelpCB(Fl_Widget* w, void* p)
 
 void NewCB(Fl_Widget* w, void* p)
 {
-	R.r_name = "Optimus";
+	R.r_name = "Optimus Prime";
+	R.image = "Optimus.jpg";
 	R.r_no = "101";
 	R.r_cost = 500;
 	R.r_price = 800;
 	R.r_profit = 300;
-	R.description = "Autobot Boss";
+	R.description = "Autobot Leader";
 	R.head_name = "op_head";
 	R.head_type = "head";
 	R.head_cost = 100;
@@ -938,6 +983,7 @@ void NewCB(Fl_Widget* w, void* p)
 	Robots.push_back(R);
 
 	R.r_name = "Bumblebee";
+	R.image = "Bumblebee.jpg";
 	R.r_no = "102";
 	R.r_cost = 250;
 	R.r_price = 750;
@@ -992,7 +1038,7 @@ void NewCB(Fl_Widget* w, void* p)
 
 	O.order_no = "2";
 	O.cust_no = "2";
-	O.cust_name = "Mikaela";
+	O.cust_name = "Mike";
 	O.robots_ordered = 2;
 	O.sa_name = "William";
 	O.sales_date = "02/02/02";
@@ -1009,8 +1055,8 @@ void NewCB(Fl_Widget* w, void* p)
 	Customers.push_back(C);
 
 	C.cust_no = "2";
-	C.cust_name = "Mikaela";
-	C.password = "Mikaela2";
+	C.cust_name = "Mike";
+	C.password = "Mike2";
 	Customers.push_back(C);
 
 	SA.sa_no = "1";
