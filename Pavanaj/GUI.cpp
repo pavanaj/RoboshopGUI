@@ -77,17 +77,17 @@ vector <Robot> Robots;
 
 struct Order
 {
-    string order_no;
-    string cust_no;
+	string order_no;
+	string cust_no;
 	string cust_name;
-    int robots_ordered;
-    string sa_name;
-    string sales_date;
-    string model_name;
-    double sub_total;
-    double shipping;
-    double tax;
-    double net_total;
+	int robots_ordered;
+	string sa_name;
+	string sales_date;
+	string model_name;
+	double sub_total;
+	double shipping;
+	double tax;
+	double net_total;
 
 }O;
 
@@ -110,6 +110,15 @@ struct SalesAssociate
 }SA;
 
 vector <SalesAssociate> SalesAssociates;
+
+struct Product_Manager
+{
+	string pm_no;
+	string pm_name;
+	string password;
+}PM;
+
+vector <Product_Manager> Managers;
 
 string double_to_str(double value)
 {
@@ -147,6 +156,81 @@ double STD(string s)
 	const char *c = s.c_str();
 	double d = atoi(c);
 	return d;
+}
+
+void Delete_RP_CB(Fl_Widget* w, void* p)
+{
+	string rp_no;
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(0);
+	rp_no = temp->value();
+
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		if (Robots[i].r_no == rp_no)
+		{
+			Robots.erase((Robots.begin() + i));
+			break;
+		}
+	}
+	win->show();
+	view->redraw();
+}
+
+void DeleteRPCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *win = new Fl_Window(250, 250, "Delete Robot Parts ");
+	Fl_Input *rp_no = new Fl_Input(100, 50, 100, 30, "Model No : "); //Child 0
+	Fl_Button *Delete = new Fl_Button(100, 120, 80, 50, "DELETE");
+	Delete->callback(Delete_RP_CB);
+
+	win->show();
+	view->redraw();
+}
+
+void ImageCB(Fl_Widget* w, void* p)
+{
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(1);
+	int no = STD(temp->value());
+	fl_register_images();
+	Fl_Window *win = new Fl_Window(600, 600);
+	Fl_JPEG_Image *jpg = new Fl_JPEG_Image((Robots[(no - 1)].image).c_str());
+	Fl_Box *box = new Fl_Box(0, 0, 600, 600);
+	box->image(*jpg);
+	win->show();
+	view->redraw();
+}
+
+void ViewRPCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *CW = new Fl_Window(600, 500, "Robot Parts");
+	Fl_Multiline_Output *BR = new Fl_Multiline_Output(0, 0, 600, 300); // Child 0
+
+	BR->type(FL_MULTILINE_OUTPUT);
+	BR->textfont(FL_COURIER);
+
+	string result = "No.\tModel No.\tName\t\t\tPrice\tDescription\t\n";
+	string s;
+
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		s = ITS(i + 1);
+		result += s + "\t" + Robots[i].r_no + "\t\t" + Robots[i].r_name + "\t\t" + DTS(Robots[i].r_price) + "\t" + Robots[i].description + "\n";
+	}
+
+	BR->value(result.c_str());
+
+	Fl_Input *detcat = new Fl_Input(250, 350, 100, 30, "Serial No : "); // Child 1
+	Fl_Button *img = new Fl_Button(250, 400, 100, 50, "IMAGE");
+	img->callback(ImageCB);
+
+	CW->resizable(BR);
+	CW->end();
+	CW->show();
+	view->redraw();
 }
 
 void EnterRoboPartsCB(Fl_Widget* w, void* p)
@@ -248,11 +332,11 @@ void EnterRoboPartsCB(Fl_Widget* w, void* p)
 
 void RoboPartsCB(Fl_Widget* w, void* p)
 {
-	Fl_Window *CRP = new Fl_Window(1280,720);
+	Fl_Window *CRP = new Fl_Window(1280, 720);
 
-	Fl_Input *modelno = new Fl_Input(150,50,100,30,"Model Number : "); //Child 0
-	Fl_Input *modelname = new Fl_Input(450,50,100,30, "Model Name : "); //Child 1
-	Fl_Input *description = new Fl_Input(750,50,200,30, "Description : ");//Child 2
+	Fl_Input *modelno = new Fl_Input(150, 50, 100, 30, "Model Number : "); //Child 0
+	Fl_Input *modelname = new Fl_Input(450, 50, 100, 30, "Model Name : "); //Child 1
+	Fl_Input *description = new Fl_Input(750, 50, 200, 30, "Description : ");//Child 2
 
 	Fl_Input *headpartno = new Fl_Input(150, 100, 100, 30, "Head PartNo : ");//Child 3
 	Fl_Input *headname = new Fl_Input(450, 100, 100, 30, "Head Name : ");//Child 4
@@ -294,8 +378,58 @@ void RoboPartsCB(Fl_Widget* w, void* p)
 	Fl_Input *image = new Fl_Input(450, 600, 100, 30, "Image : "); //Child 35
 	Fl_Button *Enter = new Fl_Button(625, 625, 100, 50, "ENTER");
 	Enter->callback(EnterRoboPartsCB);
-	
+
 	CRP->show();
+	view->redraw();
+}
+
+void Create_PM_CB(Fl_Widget* w, void* p)
+{
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(0);
+	PM.pm_no = temp->value();
+	temp = (Fl_Input*)b->parent()->child(1);
+	PM.pm_name = temp->value();
+	temp = (Fl_Input*)b->parent()->child(2);
+	PM.password = temp->value();
+
+	Managers.push_back(PM);
+}
+
+void CreatePMCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *win = new Fl_Window(400, 400, "Create Manager");
+	Fl_Input *sa_no = new Fl_Input(200, 50, 100, 30, "Prodcut Manager No : "); //Child 0
+	Fl_Input *sa_name = new Fl_Input(200, 150, 100, 30, "Product Manager Name : "); //Child 1
+	Fl_Input *sa_pass = new Fl_Input(200, 250, 100, 30, "Password : "); //Child 2
+	Fl_Button *Create = new Fl_Button(200, 350, 80, 50, "CREATE");
+	Create->callback(Create_PM_CB);
+
+	win->show();
+	view->redraw();
+}
+
+void ViewManagersCB(Fl_Widget* w, void* p)
+{
+	Fl_Window *PM = new Fl_Window(600, 300, "Product Managers");
+	Fl_Multiline_Output *out = new Fl_Multiline_Output(10, 10, 500, 250);
+
+	out->type(FL_MULTILINE_OUTPUT);
+	out->textfont(FL_COURIER);
+
+	string result = "No. \t Name \t Password\n";
+
+	for (int i = 0; i < Managers.size(); i++)
+	{
+		result += Managers[i].pm_no + " \t " + Managers[i].pm_name + " \t " + Managers[i].password + "\n";
+	}
+
+	out->value(result.c_str());
+
+	PM->resizable(out);
+	PM->end();
+	PM->show();
 	view->redraw();
 }
 
@@ -315,11 +449,11 @@ void Create_Customer_CB(Fl_Widget* w, void* p)
 
 void CreateCustomerCB(Fl_Widget* w, void* p)
 {
-	Fl_Window *win = new Fl_Window(400, 400,"Create Customer");
+	Fl_Window *win = new Fl_Window(400, 400, "Create Customer");
 	Fl_Input *cust_no = new Fl_Input(150, 50, 100, 30, "Customer No : "); //Child 0
 	Fl_Input *cust_name = new Fl_Input(150, 150, 100, 30, "Customer Name : "); //Child 1
 	Fl_Input *cust_pass = new Fl_Input(150, 250, 100, 30, "Password : "); //Child 2
-	Fl_Button *Create = new Fl_Button(150, 300 , 80, 50, "CREATE");
+	Fl_Button *Create = new Fl_Button(150, 300, 80, 50, "CREATE");
 	Create->callback(Create_Customer_CB);
 
 	win->show();
@@ -342,7 +476,7 @@ void Create_SA_CB(Fl_Widget* w, void* p)
 
 void CreateSACB(Fl_Widget* w, void* p)
 {
-	Fl_Window *win = new Fl_Window(400, 400,"Create SA");
+	Fl_Window *win = new Fl_Window(400, 400, "Create SA");
 	Fl_Input *sa_no = new Fl_Input(200, 50, 100, 30, "Sales Associate No : "); //Child 0
 	Fl_Input *sa_name = new Fl_Input(200, 150, 100, 30, "Sales Associate Name : "); //Child 1
 	Fl_Input *sa_pass = new Fl_Input(200, 250, 100, 30, "Password : "); //Child 2
@@ -435,16 +569,6 @@ void OrdersCB(Fl_Widget* w, void* p)
 	win->end();
 	win->show();
 	view->redraw();
-}
-
-void OpenCB(Fl_Widget* w, void* p)
-{
-
-}
-
-void SaveCB(Fl_Widget* w, void* p)
-{
-
 }
 
 void SalesReportCB(Fl_Widget* w, void* p)
@@ -545,10 +669,7 @@ void StoreOrderCB(Fl_Widget* w, void* p)
 	O.shipping = O.sub_total*0.10;
 	O.tax = O.sub_total*.08;
 	O.net_total = O.sub_total + O.shipping + O.tax;
-
-
 	Orders.push_back(O);
-
 }
 
 void OrderCB(Fl_Widget* w, void* p)
@@ -561,7 +682,7 @@ void OrderCB(Fl_Widget* w, void* p)
 	Fl_Input *sa_name = new Fl_Input(150, 250, 100, 30, "Sales Assc. Name : "); //Child 4
 	Fl_Input *sales_date = new Fl_Input(150, 300, 100, 30, "Sales Date : "); //Child 5
 	Fl_Input *model_name = new Fl_Input(150, 350, 100, 30, "Model Name : "); //Child 6
-	Fl_Button *create_order = new Fl_Button(150, 425, 100, 50, "Create Order"); 
+	Fl_Button *create_order = new Fl_Button(150, 425, 100, 50, "Create Order");
 	create_order->callback(StoreOrderCB);
 	order->show();
 	order->resizable(order);
@@ -715,21 +836,6 @@ void CustOrderCB(Fl_Widget* w, void* p)
 	view->redraw();
 }
 
-void ImageCB(Fl_Widget* w, void* p)
-{
-	Fl_Button* b = (Fl_Button*)w;
-	Fl_Input* temp;
-	temp = (Fl_Input*)b->parent()->child(1);
-	int no = STD(temp->value());	
-	fl_register_images();
-	Fl_Window *win = new Fl_Window(600, 600);
-	Fl_JPEG_Image *jpg = new Fl_JPEG_Image((Robots[(no - 1)].image).c_str());
-	Fl_Box *box = new Fl_Box(0, 0, 600, 600);
-	box->image(*jpg);
-	win->show();
-	view->redraw();
-}
-
 void DetailedCatalogCB(Fl_Widget* w, void* p)
 {
 	Fl_Window *CW = new Fl_Window(600, 600, "Detailed Catalog");
@@ -737,7 +843,6 @@ void DetailedCatalogCB(Fl_Widget* w, void* p)
 	Fl_Text_Display *display = new Fl_Text_Display(10, 10, 600, 600);
 	display->buffer(buff);
 	CW->resizable(*display);
-	CW->show();
 
 	Fl_Button* b = (Fl_Button*)w;
 	Fl_Input* temp;
@@ -751,7 +856,7 @@ void DetailedCatalogCB(Fl_Widget* w, void* p)
 	{
 		if (i == (n - 1))
 		{
-			result += "No.: " + Robots[i].r_no + "\n";
+			result += "Model No.: " + Robots[i].r_no + "\n";
 			result += "Name: " + Robots[i].r_name + "\n";
 			result += "Price: " + DTS(Robots[i].r_price) + "\n";
 			result += "Description: " + Robots[i].description + "\n\n";
@@ -798,6 +903,7 @@ void DetailedCatalogCB(Fl_Widget* w, void* p)
 	buff->text(result.c_str());
 
 	CW->end();
+	CW->show();
 	view->redraw();
 }
 
@@ -821,7 +927,7 @@ void CatalogCB(Fl_Widget* w, void* p)
 	BR->value(result.c_str());
 
 	Fl_Input *detcat = new Fl_Input(250, 350, 100, 30, "Serial No : "); // Child 1
-	Fl_Button *Enter = new Fl_Button(200, 400, 100, 50, "DETAILS"); 
+	Fl_Button *Enter = new Fl_Button(200, 400, 100, 50, "DETAILS");
 	Fl_Button *img = new Fl_Button(400, 400, 100, 50, "IMAGE");
 	Enter->callback(DetailedCatalogCB);
 	img->callback(ImageCB);
@@ -866,7 +972,7 @@ void GenerateSAR(Fl_Widget* w, void* p)
 
 void SAReportCB(Fl_Widget* w, void* p)
 {
-	Fl_Window *win = new Fl_Window(220, 220,"SA Report");
+	Fl_Window *win = new Fl_Window(220, 220, "SA Report");
 	Fl_Input *sa_no = new Fl_Input(100, 50, 100, 30, "SA Name : "); //Child 0
 	Fl_Button *Generate = new Fl_Button(50, 125, 80, 50, "Generate");
 	Generate->callback(GenerateSAR);
@@ -882,6 +988,351 @@ void View::draw()
 bool View::saved()
 {
 	return dirty;
+}
+
+void OpenCB(Fl_Widget* w, void* p)
+{
+	ifstream read_Orders;
+	read_Orders.open("Orders_data.txt");
+
+	ifstream read_Robots;
+	read_Robots.open("Robots_data.txt");
+
+	ifstream read_Cust;
+	read_Cust.open("Cust_data.txt");
+
+	ifstream read_SA;
+	read_SA.open("SA_data.txt");
+
+	ifstream read_PM;
+	read_PM.open("PM_data.txt");
+
+	string word;
+	double number;
+
+	while (getline(read_Orders, word, '@'))
+	{
+		O.order_no = word;
+
+		getline(read_Orders, word, '@');
+		O.cust_no = word;
+
+		getline(read_Orders, word, '@');
+		O.cust_name = word;
+
+		getline(read_Orders, word, '@');
+		number = str_to_double(word);
+		O.robots_ordered = (int)number;
+
+		getline(read_Orders, word, '@');
+		O.sa_name = word;
+
+		getline(read_Orders, word, '@');
+		O.sales_date = word;
+
+		getline(read_Orders, word, '@');
+		O.model_name = word;
+
+		getline(read_Orders, word, '@');
+		number = str_to_double(word);
+		O.sub_total = number;
+
+		getline(read_Orders, word, '@');
+		number = str_to_double(word);
+		O.shipping = number;
+
+		getline(read_Orders, word, '@');
+		number = str_to_double(word);
+		O.tax = number;
+
+		getline(read_Orders, word, '\n');
+		number = str_to_double(word);
+		O.net_total = number;
+
+		Orders.push_back(O);
+	}
+
+	while (getline(read_Robots, word, '@'))
+	{
+		//Robot Specs
+		R.r_name = word;
+
+		getline(read_Robots, word, '@');
+		R.r_no = word;
+
+		getline(read_Robots, word, '@');
+		R.description = word;
+
+		getline(read_Robots, word, '@');
+		R.image = word;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.r_cost = number;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.r_price = number;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.r_profit = number;
+
+		// Head Specs
+		R.head_name = word;
+
+		getline(read_Robots, word, '@');
+		R.head_type = word;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.head_cost = number;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.head_weight = number;
+
+		getline(read_Robots, word, '@');
+		R.head_partno = word;
+
+		// Torso Specs
+		getline(read_Robots, word, '@');
+		R.torso_name = word;
+
+		getline(read_Robots, word, '@');
+		R.torso_type = word;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.torso_cost = number;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.torso_weight = number;
+
+		getline(read_Robots, word, '@');
+		R.torso_partno = word;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.compartments = (int)number;
+
+		// Locomoter Specs
+		getline(read_Robots, word, '@');
+		R.locomoter_name = word;
+
+		getline(read_Robots, word, '@');
+		R.locomoter_type = word;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.locomoter_cost = number;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.locomoter_weight = number;
+
+		getline(read_Robots, word, '@');
+		R.locomoter_partno = word;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.max_speed = number;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.power_consumed = number;
+
+		// Battery Specs
+		getline(read_Robots, word, '@');
+		R.battery_name = word;
+
+		getline(read_Robots, word, '@');
+		R.battery_type = word;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.battery_cost = number;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.battery_weight = number;
+
+		getline(read_Robots, word, '@');
+		R.battery_partno = word;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.max_power = number;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.energy = number;
+
+		// Arms Specs
+		getline(read_Robots, word, '@');
+		R.arms_name = word;
+
+		getline(read_Robots, word, '@');
+		R.arms_type = word;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.arms_cost = number;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.arms_weight = number;
+
+		getline(read_Robots, word, '@');
+		R.arms_partno = word;
+
+		getline(read_Robots, word, '@');
+		number = str_to_double(word);
+		R.no_of_arms = (int)number;
+
+		getline(read_Robots, word, '\n');
+		number = str_to_double(word);
+		R.arms_power = number;
+
+		Robots.push_back(R);
+	}
+
+	while (getline(read_Cust, word, '@'))
+	{
+		C.cust_no = word;
+
+		getline(read_Cust, word, '@');
+		C.cust_name = word;
+
+		getline(read_Cust, word, '\n');
+		C.password = word;
+
+		Customers.push_back(C);
+	}
+
+	while (getline(read_SA, word, '@'))
+	{
+		SA.sa_no = word;
+
+		getline(read_SA, word, '@');
+		SA.sa_name = word;
+
+		getline(read_SA, word, '\n');
+		SA.password = word;
+
+		SalesAssociates.push_back(SA);
+	}
+
+	while (getline(read_PM, word, '@'))
+	{
+		PM.pm_no = word;
+
+		getline(read_PM, word, '@');
+		PM.pm_name = word;
+
+		getline(read_PM, word, '\n');
+		PM.password = word;
+
+		Managers.push_back(PM);
+	}
+}
+
+void SaveCB(Fl_Widget* w, void* p)
+{
+	ofstream write_Orders;
+	write_Orders.open("Orders_data.txt");
+
+	ofstream write_Robots;
+	write_Robots.open("Robots_data.txt");
+
+	ofstream write_Cust;
+	write_Cust.open("Cust_data.txt");
+
+	ofstream write_SA;
+	write_SA.open("SA_data.txt");
+
+	ofstream write_PM;
+	write_PM.open("PM_data.txt");
+
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		write_Orders << Orders[i].order_no << "@"
+			<< Orders[i].cust_no << "@"
+			<< Orders[i].cust_name << "@"
+			<< Orders[i].robots_ordered << "@"
+			<< Orders[i].sa_name << "@"
+			<< Orders[i].sales_date << "@"
+			<< Orders[i].model_name << "@"
+			<< Orders[i].sub_total << "@"
+			<< Orders[i].shipping << "@"
+			<< Orders[i].tax << "@"
+			<< Orders[i].net_total << endl;
+	}
+
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		write_Robots << Robots[i].r_name << "@"
+			<< Robots[i].r_no << "@"
+			<< Robots[i].description << "@"
+			<< Robots[i].image << "@"
+			<< Robots[i].r_cost << "@"
+			<< Robots[i].r_price << "@"
+			<< Robots[i].r_profit << "@"
+			<< Robots[i].head_name << "@"
+			<< Robots[i].head_type << "@"
+			<< Robots[i].head_cost << "@"
+			<< Robots[i].head_weight << "@"
+			<< Robots[i].head_partno << "@"
+			<< Robots[i].torso_name << "@"
+			<< Robots[i].torso_type << "@"
+			<< Robots[i].torso_cost << "@"
+			<< Robots[i].torso_weight << "@"
+			<< Robots[i].torso_partno << "@"
+			<< Robots[i].compartments << "@"
+			<< Robots[i].locomoter_name << "@"
+			<< Robots[i].locomoter_type << "@"
+			<< Robots[i].locomoter_cost << "@"
+			<< Robots[i].locomoter_weight << "@"
+			<< Robots[i].locomoter_partno << "@"
+			<< Robots[i].max_speed << "@"
+			<< Robots[i].power_consumed << "@"
+			<< Robots[i].battery_name << "@"
+			<< Robots[i].battery_type << "@"
+			<< Robots[i].battery_cost << "@"
+			<< Robots[i].battery_weight << "@"
+			<< Robots[i].battery_partno << "@"
+			<< Robots[i].max_power << "@"
+			<< Robots[i].energy << "@"
+			<< Robots[i].arms_name << "@"
+			<< Robots[i].arms_type << "@"
+			<< Robots[i].arms_cost << "@"
+			<< Robots[i].arms_weight << "@"
+			<< Robots[i].arms_partno << "@"
+			<< Robots[i].no_of_arms << "@"
+			<< Robots[i].arms_power << endl;
+	}
+
+	for (int i = 0; i < Customers.size(); i++)
+	{
+		write_Cust << Customers[i].cust_no << "@"
+			<< Customers[i].cust_name << "@"
+			<< Customers[i].password << endl;
+	}
+
+	for (int i = 0; i < SalesAssociates.size(); i++)
+	{
+		write_SA << SalesAssociates[i].sa_no << "@"
+			<< SalesAssociates[i].sa_name << "@"
+			<< SalesAssociates[i].password << endl;
+	}
+
+	for (int i = 0; i < Managers.size(); i++)
+	{
+		write_PM << Managers[i].pm_no << "@"
+			<< Managers[i].pm_name << "@"
+			<< Managers[i].password << endl;
+	}
 }
 
 void QuitCB(Fl_Widget* w, void* p)
@@ -906,35 +1357,35 @@ void HelpCB(Fl_Widget* w, void* p)
 	help->resizable(*display);
 	help->show();
 	buff->text(
-	"Boss:\n1. The Boss can view the sales record of all the Sales Associates in the system.\nHe can then decide who should be given a raise."
-	"\n2. The Boss can view the profit over each robot."
-	"\n3. The Boss can view the models sold of each robot."
-	"\n4. The Boss can view the details of all the orders taken by the shop."
-	"\n"
-	"\nProduct Manager :"
-	"\n1. The Product Manager defines the parts of a Robot.Each Robot Part has its own attributes, like energy, power, cost, etc."
-	"\nWhen all the parts are defined, a Robot is assembled to be sold to a Customer."
-	"\n2. After all the Robot Parts are defined with their accessories, their costs are added up to find the total cost of the assembled Robot."
-	"\nThe Product Manager knows the cost of the Robot which helps to decide the price of the Robot."
-	"\n3. When the Robot is assembled and ready for selling to the Customers, the Product Manager decides the price of the Robot," 
-	"\n thereby calculating the profit for each Robot."
-	"\n"
-	"\nSales Associate :"
-	"\n1. The Sales Associate can create an order for a customer by selecting the Create Order and Generate Bill menu option."
-	"\nThe Sales Associate will be prompted to enter his / her information and information for the Customer and order."
-	"\n2. The Create Order and Generate Bill option will also print the bill of sale created by the Sales Associate."
-	"\n3. The Sales Associate may also generate a report of all of his / her itemized sales and sales totals by selecting the"
-	"\nView my Sales Report option."
-	"\n"
-	"\nCustomer:"
-	"\n1. The Customer can view the full Robot Catalog of the Robot Shop."
-	"\nThe Customer can then view details of a particular Robot if the Customer wishes to."
-	"\n2. The Customer can view the Order that has been placed by them."
-	"\nThe Order gives details about the quantity of the robot choses,	its price and amount to pay for the purchase."
-	"\n3. The Customer can print their Bill of all the orders that they placed."
-	"\nThe Bill will give details about the date of purchase, Order Number, Robot Name, Quantity of the Robot,"
-	"\nand all the monetary distributions for the clarity of the Customer."
-	"\n"
+		"Boss:\n1. The Boss can view the sales record of all the Sales Associates in the system.\nHe can then decide who should be given a raise."
+		"\n2. The Boss can view the profit over each robot."
+		"\n3. The Boss can view the models sold of each robot."
+		"\n4. The Boss can view the details of all the orders taken by the shop."
+		"\n"
+		"\nProduct Manager :"
+		"\n1. The Product Manager defines the parts of a Robot.Each Robot Part has its own attributes, like energy, power, cost, etc."
+		"\nWhen all the parts are defined, a Robot is assembled to be sold to a Customer."
+		"\n2. After all the Robot Parts are defined with their accessories, their costs are added up to find the total cost of the assembled Robot."
+		"\nThe Product Manager knows the cost of the Robot which helps to decide the price of the Robot."
+		"\n3. When the Robot is assembled and ready for selling to the Customers, the Product Manager decides the price of the Robot,"
+		"\n thereby calculating the profit for each Robot."
+		"\n"
+		"\nSales Associate :"
+		"\n1. The Sales Associate can create an order for a customer by selecting the Create Order and Generate Bill menu option."
+		"\nThe Sales Associate will be prompted to enter his / her information and information for the Customer and order."
+		"\n2. The Create Order and Generate Bill option will also print the bill of sale created by the Sales Associate."
+		"\n3. The Sales Associate may also generate a report of all of his / her itemized sales and sales totals by selecting the"
+		"\nView my Sales Report option."
+		"\n"
+		"\nCustomer:"
+		"\n1. The Customer can view the full Robot Catalog of the Robot Shop."
+		"\nThe Customer can then view details of a particular Robot if the Customer wishes to."
+		"\n2. The Customer can view the Order that has been placed by them."
+		"\nThe Order gives details about the quantity of the robot choses,	its price and amount to pay for the purchase."
+		"\n3. The Customer can print their Bill of all the orders that they placed."
+		"\nThe Bill will give details about the date of purchase, Order Number, Robot Name, Quantity of the Robot,"
+		"\nand all the monetary distributions for the clarity of the Customer."
+		"\n"
 	);
 	view->redraw();
 }
@@ -1068,14 +1519,19 @@ void NewCB(Fl_Widget* w, void* p)
 	SA.sa_name = "William";
 	SA.password = "William2";
 	SalesAssociates.push_back(SA);
+
+	PM.pm_no = "1";
+	PM.pm_name = "John";
+	PM.password = "John1";
+	Managers.push_back(PM);
 }
 
 int main()
 {
 	// CREATE WINDOW
-	win = new Fl_Window(720,480,"RoboShop");
+	win = new Fl_Window(720, 480, "RoboShop");
 	win->color(FL_WHITE);
-	view = new View (0, 0, 720, 480);
+	view = new View(0, 0, 720, 480);
 	//MAIN MENU
 	menubar = new Fl_Menu_Bar(0, 0, 720, 30);
 	Fl_Menu_Item menuitems[] =
@@ -1084,19 +1540,23 @@ int main()
 		{ "New",0,(Fl_Callback*)NewCB,0,FL_MENU_DIVIDER },
 		{ "Open",0,(Fl_Callback*)OpenCB },
 		{ "Save",0,(Fl_Callback*)SaveCB,0,FL_MENU_DIVIDER },
-		{ "Help",0,(Fl_Callback*)HelpCB},
-		{ "Quit",0,(Fl_Callback*)QuitCB},
+		{ "Help",0,(Fl_Callback*)HelpCB },
+		{ "Quit",0,(Fl_Callback*)QuitCB },
 		{ 0 },
 		{ "&Product Manager",0,0,0, FL_SUBMENU },
-		{ "Create RoboParts",0,(Fl_Callback*)RoboPartsCB },
+		{ "Create Robot Parts",0,(Fl_Callback*)RoboPartsCB },
+		{ "Delete Robot Parts",0,(Fl_Callback*)DeleteRPCB },
+		{ "View Robot Parts",0,(Fl_Callback*)ViewRPCB },
 		{ 0 },
 		{ "&Boss",0,0,0, FL_SUBMENU },
 		{ "Sales Report",0,(Fl_Callback*)SalesReportCB },
 		{ "View Orders",0,(Fl_Callback*)OrdersCB,0,FL_MENU_DIVIDER },
 		{ "Model's Sales",0,(Fl_Callback*)ModelSalesCB },
 		{ "Model's Profit",0,(Fl_Callback*)ProfitCB,0,FL_MENU_DIVIDER },
-		{ "Create Customer",0,(Fl_Callback*)CreateCustomerCB},
+		{ "Create Product Manager",0,(Fl_Callback*)CreatePMCB },
+		{ "Create Customer",0,(Fl_Callback*)CreateCustomerCB },
 		{ "Create Sales Associate",0,(Fl_Callback*)CreateSACB,0,FL_MENU_DIVIDER },
+		{ "View Product Managers",0,(Fl_Callback*)ViewManagersCB },
 		{ "View Customers",0,(Fl_Callback*)ViewCustomerCB },
 		{ "View Sales Associates",0,(Fl_Callback*)ViewSACB },
 		{ 0 },
