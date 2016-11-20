@@ -1,6 +1,4 @@
-CSE 1325-003 Homework #6
-
-
+CSE 1325-003 Project
 
 Pavanaj Biyani - 1001236871
 
@@ -11,7 +9,7 @@ Shweta Shikarkhane - 1001192846
 Winston Starling - 1001346251
 
 
-
 Bit Bucket - https://pavanaj@bitbucket.org/pavanaj/cse-1325-hw-6.git
 
-To execute the program on MinGW the command used is : fltk-config --compile GUI.cpp
+To execute the program on MinGW the command used is : 
+fltk-config --use-images --compile GUI.cpp

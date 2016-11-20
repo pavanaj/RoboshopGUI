@@ -1,14 +1,10 @@
-// standard headers
+//using namespace std;
 #include <iostream>
 #include <fstream>
 #include "std_lib_facilities.h"
 #include <string>
 #include <sstream>
-using namespace std;
-
 #include "View.h"
-
-// GUI Widgets
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <Fl/Fl_Button.H>
@@ -26,8 +22,6 @@ using namespace std;
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Scroll.H>
 
-Fl_Window *win;
-Fl_Menu_Bar *menubar;
 View *view;
 
 struct Robot
@@ -174,8 +168,6 @@ void Delete_RP_CB(Fl_Widget* w, void* p)
 			break;
 		}
 	}
-	win->show();
-	view->redraw();
 }
 
 void DeleteRPCB(Fl_Widget* w, void* p)
@@ -1344,7 +1336,7 @@ void QuitCB(Fl_Widget* w, void* p)
 	}
 	if (selection == 1)
 	{
-		win->hide();
+		exit(0);
 	}
 }
 
@@ -1526,53 +1518,232 @@ void NewCB(Fl_Widget* w, void* p)
 	Managers.push_back(PM);
 }
 
+void Boss_Menu(Fl_Widget* w, void* p)
+{
+	string pass;
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(2);
+	pass = temp->value();
+	
+	if (pass == "admin")
+	{
+		Fl_Window *win = new Fl_Window(500, 300, "POINTY HAIRED BOSS");
+		win->color(FL_WHITE);
+		view = new View(0, 0, 500, 300);
+		Fl_Menu_Bar *menubar = new Fl_Menu_Bar(0, 0, 600, 30);
+		Fl_Menu_Item menuitems[] =
+		{
+			{ "&File",0,0,0, FL_SUBMENU },
+			{ "Test Case",0,(Fl_Callback*)NewCB },
+			{ "Read Data",0,(Fl_Callback*)OpenCB },
+			{ "Save Data",0,(Fl_Callback*)SaveCB },
+			{ 0 },
+			{ "&Reports",0,0,0, FL_SUBMENU },
+			{ "Sales Report",0,(Fl_Callback*)SalesReportCB },
+			{ "View Orders",0,(Fl_Callback*)OrdersCB },
+			{ 0 },
+			{ "&Inventory",0,0,0, FL_SUBMENU },
+			{ "Model's Sales",0,(Fl_Callback*)ModelSalesCB },
+			{ "Model's Profit",0,(Fl_Callback*)ProfitCB },
+			{ 0 },
+			{ "&Create",0,0,0, FL_SUBMENU },
+			{ "Product Manager",0,(Fl_Callback*)CreatePMCB },
+			{ "Customer",0,(Fl_Callback*)CreateCustomerCB },
+			{ "Sales Associate",0,(Fl_Callback*)CreateSACB },
+			{ 0 },
+			{ "&View",0,0,0, FL_SUBMENU },
+			{ "Product Managers",0,(Fl_Callback*)ViewManagersCB },
+			{ "Customers",0,(Fl_Callback*)ViewCustomerCB },
+			{ "Sales Associates",0,(Fl_Callback*)ViewSACB },
+			{ 0 },
+			{ 0 }
+		};
+		menubar->menu(menuitems);
+		win->end();
+		win->show();
+	}
+	else
+	{
+		Fl_Window *win = new Fl_Window(300, 150, "INVALID USER");
+		Fl_Box *box = new Fl_Box(60, 50, 150, 75, "INVALID USER!!");
+		box->labelfont(FL_BOLD + FL_ITALIC);
+		box->labelsize(25);
+		box->labelcolor(FL_RED);
+		win->show();
+	}
+
+	Fl::run();
+}
+
+void PM_Menu(Fl_Widget* w, void* p)
+{
+	string pass;
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(2);
+	pass = temp->value();
+
+	int flag = 0;
+
+	for (int i =0;i<Managers.size();i++)
+	{
+		if (pass == Managers[i].password)
+		{
+			flag = 1;
+			break;
+		}
+	}
+	if (flag == 1 || pass=="admin")
+	{
+		Fl_Window *win = new Fl_Window(400, 350, "PRODUCT MANAGER");
+		win->color(FL_WHITE);
+		view = new View(0, 0, 400, 350);
+
+		Fl_Button *CRPCB = new Fl_Button(50, 50, 300, 50, "CREATE ROBOT PARTS");
+		Fl_Button *DRPCB = new Fl_Button(50, 150, 300, 50, "DELETE ROBOT PARTS");
+		Fl_Button *VRPCB = new Fl_Button(50, 250, 300, 50, "VIEW ROBOT PARTS");
+
+		CRPCB->callback(RoboPartsCB);
+		DRPCB->callback(DeleteRPCB);
+		VRPCB->callback(ViewRPCB);
+
+		win->end();
+		win->show();
+	}
+	else
+	{
+		Fl_Window *win = new Fl_Window(300, 150, "INVALID USER");
+		Fl_Box *box = new Fl_Box(60, 50, 150, 75, "INVALID USER!!");
+		box->labelfont(FL_BOLD + FL_ITALIC);
+		box->labelsize(25);
+		box->labelcolor(FL_RED);
+		win->show();
+	}
+	
+	Fl::run();
+}
+
+void Cust_Menu(Fl_Widget* w, void* p)
+{
+	string pass;
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(2);
+	pass = temp->value();
+
+	int flag = 0;
+
+	for (int i = 0; i<Customers.size(); i++)
+	{
+		if (pass == Customers[i].password)
+		{
+			flag = 1;
+			break;
+		}
+	}
+	if (flag == 1 || pass == "admin")
+	{
+		Fl_Window *win = new Fl_Window(300, 350, "BELOVED CUSTOMER");
+		win->color(FL_WHITE);
+		view = new View(0, 0, 300, 350);
+
+		Fl_Button *CCB = new Fl_Button(50, 50, 200, 50, "VIEW CATALOG");
+		Fl_Button *CBCB = new Fl_Button(50, 150, 200, 50, "VIEW BILL");
+		Fl_Button *COCB = new Fl_Button(50, 250, 200, 50, "VIEW ORDERS");
+
+		CCB->callback(CatalogCB);
+		CBCB->callback(CustBillCB);
+		COCB->callback(CustOrderCB);
+		
+		win->end();
+		win->show();
+	}
+	else
+	{
+		Fl_Window *win = new Fl_Window(300, 150, "INVALID USER");
+		Fl_Box *box = new Fl_Box(60, 50, 150, 75, "INVALID USER!!");
+		box->labelfont(FL_BOLD + FL_ITALIC);
+		box->labelsize(25);
+		box->labelcolor(FL_RED);
+		win->show();
+	}
+
+	Fl::run();
+}
+
+void SA_Menu(Fl_Widget* w, void* p)
+{
+	string pass;
+	Fl_Button* b = (Fl_Button*)w;
+	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(2);
+	pass = temp->value();
+
+	int flag = 0;
+
+	for (int i = 0; i<SalesAssociates.size(); i++)
+	{
+		if (pass == SalesAssociates[i].password)
+		{
+			flag = 1;
+			break;
+		}
+	}
+	if (flag == 1 || pass == "admin")
+	{
+		Fl_Window *	win = new Fl_Window(300, 350, "SALES ASSOCIATE");
+		win->color(FL_WHITE);
+		view = new View(0, 0, 300, 350);
+
+		Fl_Button *COCB = new Fl_Button(50, 50, 200, 50, "CREATE ORDER");
+		Fl_Button *CBCB = new Fl_Button(50, 150, 200, 50, "CREATE BILL");
+		Fl_Button *SRCB = new Fl_Button(50, 250, 200, 50, "SALES REPORT");
+
+		COCB->callback(OrderCB);
+		CBCB->callback(BillCB);
+		SRCB->callback(SAReportCB);
+		
+		win->end();
+		win->show();
+	}
+	else
+	{
+		Fl_Window *win = new Fl_Window(300, 150, "INVALID USER");
+		Fl_Box *box = new Fl_Box(60, 50, 150, 75, "INVALID USER!!");
+		box->labelfont(FL_BOLD + FL_ITALIC);
+		box->labelsize(25);
+		box->labelcolor(FL_RED);
+		win->show();
+	}
+	
+	Fl::run();
+}
+
 int main()
 {
-	// CREATE WINDOW
-	win = new Fl_Window(720, 480, "RoboShop");
+	Fl_Window *win = new Fl_Window(600, 500, "ROBOSHOP");
 	win->color(FL_WHITE);
-	view = new View(0, 0, 720, 480);
-	//MAIN MENU
-	menubar = new Fl_Menu_Bar(0, 0, 720, 30);
-	Fl_Menu_Item menuitems[] =
-	{
-		{ "&File",0,0,0, FL_SUBMENU },
-		{ "New",0,(Fl_Callback*)NewCB,0,FL_MENU_DIVIDER },
-		{ "Open",0,(Fl_Callback*)OpenCB },
-		{ "Save",0,(Fl_Callback*)SaveCB,0,FL_MENU_DIVIDER },
-		{ "Help",0,(Fl_Callback*)HelpCB },
-		{ "Quit",0,(Fl_Callback*)QuitCB },
-		{ 0 },
-		{ "&Product Manager",0,0,0, FL_SUBMENU },
-		{ "Create Robot Parts",0,(Fl_Callback*)RoboPartsCB },
-		{ "Delete Robot Parts",0,(Fl_Callback*)DeleteRPCB },
-		{ "View Robot Parts",0,(Fl_Callback*)ViewRPCB },
-		{ 0 },
-		{ "&Boss",0,0,0, FL_SUBMENU },
-		{ "Sales Report",0,(Fl_Callback*)SalesReportCB },
-		{ "View Orders",0,(Fl_Callback*)OrdersCB,0,FL_MENU_DIVIDER },
-		{ "Model's Sales",0,(Fl_Callback*)ModelSalesCB },
-		{ "Model's Profit",0,(Fl_Callback*)ProfitCB,0,FL_MENU_DIVIDER },
-		{ "Create Product Manager",0,(Fl_Callback*)CreatePMCB },
-		{ "Create Customer",0,(Fl_Callback*)CreateCustomerCB },
-		{ "Create Sales Associate",0,(Fl_Callback*)CreateSACB,0,FL_MENU_DIVIDER },
-		{ "View Product Managers",0,(Fl_Callback*)ViewManagersCB },
-		{ "View Customers",0,(Fl_Callback*)ViewCustomerCB },
-		{ "View Sales Associates",0,(Fl_Callback*)ViewSACB },
-		{ 0 },
-		{ "&Sales Associate",0,0,0, FL_SUBMENU },
-		{ "Sales Report",0,(Fl_Callback*)SAReportCB },
-		{ "Create Order",0,(Fl_Callback*)OrderCB },
-		{ "Create Bill",0,(Fl_Callback*)BillCB },
-		{ 0 },
-		{ "&Customer",0,0,0, FL_SUBMENU },
-		{ "View Catalog",0,(Fl_Callback*)CatalogCB },
-		{ "View Bills",0,(Fl_Callback*)CustBillCB },
-		{ "View Orders",0,(Fl_Callback*)CustOrderCB },
-		{ 0 },
-		{ 0 }
-	};
-	menubar->menu(menuitems);
+	view = new View(0, 0, 600, 500);
+
+	Fl_Input *user = new Fl_Input(150, 50, 100, 30, "User Name  "); // Child 0
+	Fl_Input *pass = new Fl_Input(400, 50, 100, 30, "Password  "); // Child 1
+
+	Fl_Button *Boss_button = new Fl_Button(150, 150, 150, 50, "BOSS"); // Child 2
+	Fl_Button *PM_button = new Fl_Button(350, 150, 150, 50, "MANAGER"); // Child 3
+	Fl_Button *Cust_button = new Fl_Button(150, 250, 150, 50, "CUSTOMER"); // Child 4
+	Fl_Button *SA_button = new Fl_Button(350, 250, 150, 50, "SALES ASSOCIATE"); // Child 5
+	Fl_Button *Help_button = new Fl_Button(175, 350, 100, 50, "HELP"); // Child 6
+	Fl_Button *Quit_button = new Fl_Button(375, 350, 100, 50, "QUIT"); // Child 7
+
+	Boss_button->callback(Boss_Menu);
+	PM_button->callback(PM_Menu);
+	Cust_button->callback(Cust_Menu);
+	SA_button->callback(SA_Menu);
+
+	Help_button->callback(HelpCB);
+	Quit_button->callback(QuitCB);
+
 	win->end();
 	win->show();
 	return (Fl::run());
