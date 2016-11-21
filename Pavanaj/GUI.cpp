@@ -1,10 +1,9 @@
-//using namespace std;
+#include "View.h"
+#include "std_lib_facilities.h"
 #include <iostream>
 #include <fstream>
-#include "std_lib_facilities.h"
 #include <string>
 #include <sstream>
-#include "View.h"
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <Fl/Fl_Button.H>
@@ -21,8 +20,55 @@
 #include <FL/Fl_Multiline_Output.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Scroll.H>
+#include <FL/Fl_Menu.H>
+#include <math.h>
 
 View *view;
+
+class MyInput : public Fl_Input
+{
+	static void Copy_CB(Fl_Widget*, void *userdata)
+	{
+		MyInput *in = (MyInput*)userdata;
+		in->copy(0);   
+		in->copy(1);    
+	}
+	static void Paste_CB(Fl_Widget*, void *userdata)
+	{
+		MyInput *in = (MyInput*)userdata;
+		Fl::paste(*in, 1);    
+	}
+	public:
+	int handle(int e)
+	{
+		switch (e)
+		{
+		case FL_PUSH:
+			if (Fl::event_button() == FL_RIGHT_MOUSE)
+			{
+				Fl_Menu_Item rclick_menu[] =
+				{
+					{ "Copy",   0, Copy_CB,  (void*)this },
+					{ "Paste",  0, Paste_CB, (void*)this },
+					{ 0 }
+				};
+				const Fl_Menu_Item *m = rclick_menu->popup(Fl::event_x(), Fl::event_y(), 0, 0, 0);
+				if (m) m->do_callback(0, m->user_data());
+				return(1);          
+			}
+			break;
+		case FL_RELEASE:
+			if (Fl::event_button() == FL_RIGHT_MOUSE)
+			{
+				return(1);          
+			}
+			break;
+		}
+		return(Fl_Input::handle(e));    
+	}
+	MyInput(int X, int Y, int W, int H, const char*L = 0) :Fl_Input(X, Y, W, H, L) 
+	{}
+};
 
 struct Robot
 {
@@ -392,9 +438,9 @@ void Create_PM_CB(Fl_Widget* w, void* p)
 void CreatePMCB(Fl_Widget* w, void* p)
 {
 	Fl_Window *win = new Fl_Window(400, 400, "Create Manager");
-	Fl_Input *sa_no = new Fl_Input(200, 50, 100, 30, "Prodcut Manager No : "); //Child 0
-	Fl_Input *sa_name = new Fl_Input(200, 150, 100, 30, "Product Manager Name : "); //Child 1
-	Fl_Input *sa_pass = new Fl_Input(200, 250, 100, 30, "Password : "); //Child 2
+	MyInput *sa_no = new MyInput(200, 50, 100, 30, "Prodcut Manager No : "); //Child 0
+	MyInput *sa_name = new MyInput(200, 150, 100, 30, "Product Manager Name : "); //Child 1
+	MyInput *sa_pass = new MyInput(200, 250, 100, 30, "Password : "); //Child 2
 	Fl_Button *Create = new Fl_Button(200, 350, 80, 50, "CREATE");
 	Create->callback(Create_PM_CB);
 
@@ -442,9 +488,9 @@ void Create_Customer_CB(Fl_Widget* w, void* p)
 void CreateCustomerCB(Fl_Widget* w, void* p)
 {
 	Fl_Window *win = new Fl_Window(400, 400, "Create Customer");
-	Fl_Input *cust_no = new Fl_Input(150, 50, 100, 30, "Customer No : "); //Child 0
-	Fl_Input *cust_name = new Fl_Input(150, 150, 100, 30, "Customer Name : "); //Child 1
-	Fl_Input *cust_pass = new Fl_Input(150, 250, 100, 30, "Password : "); //Child 2
+	MyInput *cust_no = new MyInput(150, 50, 100, 30, "Customer No : "); //Child 0
+	MyInput *cust_name = new MyInput(150, 150, 100, 30, "Customer Name : "); //Child 1
+	MyInput *cust_pass = new MyInput(150, 250, 100, 30, "Password : "); //Child 2
 	Fl_Button *Create = new Fl_Button(150, 300, 80, 50, "CREATE");
 	Create->callback(Create_Customer_CB);
 
@@ -469,9 +515,9 @@ void Create_SA_CB(Fl_Widget* w, void* p)
 void CreateSACB(Fl_Widget* w, void* p)
 {
 	Fl_Window *win = new Fl_Window(400, 400, "Create SA");
-	Fl_Input *sa_no = new Fl_Input(200, 50, 100, 30, "Sales Associate No : "); //Child 0
-	Fl_Input *sa_name = new Fl_Input(200, 150, 100, 30, "Sales Associate Name : "); //Child 1
-	Fl_Input *sa_pass = new Fl_Input(200, 250, 100, 30, "Password : "); //Child 2
+	MyInput *sa_no = new MyInput(200, 50, 100, 30, "Sales Associate No : "); //Child 0
+	MyInput *sa_name = new MyInput(200, 150, 100, 30, "Sales Associate Name : "); //Child 1
+	MyInput *sa_pass = new MyInput(200, 250, 100, 30, "Password : "); //Child 2
 	Fl_Button *Create = new Fl_Button(200, 350, 80, 50, "CREATE");
 	Create->callback(Create_SA_CB);
 
@@ -835,7 +881,7 @@ void DetailedCatalogCB(Fl_Widget* w, void* p)
 	Fl_Text_Display *display = new Fl_Text_Display(10, 10, 600, 600);
 	display->buffer(buff);
 	CW->resizable(*display);
-
+	int flag = 0;
 	Fl_Button* b = (Fl_Button*)w;
 	Fl_Input* temp;
 	temp = (Fl_Input*)b->parent()->child(1);
@@ -889,13 +935,28 @@ void DetailedCatalogCB(Fl_Widget* w, void* p)
 			result += "Part No.: " + Robots[i].arms_partno + "\n";
 			result += "No.: " + DTS(Robots[i].no_of_arms) + "\n";
 			result += "Power Consumed: " + DTS(Robots[i].arms_power);
+
+			flag = 1;
 		}
 	}
 
-	buff->text(result.c_str());
+	if (flag == 1)
+	{
+		buff->text(result.c_str());
+		CW->end();
+		CW->show();
+	}
+	else
+	{
+		CW->hide();
+		Fl_Window *win = new Fl_Window(300, 150, "NO RECORDS FOUND");
+		Fl_Box *box = new Fl_Box(70, 50, 150, 75, "NO RECORDS FOUND");
+		box->labelfont(FL_BOLD + FL_ITALIC);
+		box->labelsize(25);
+		box->labelcolor(FL_RED);
+		win->show();
+	}
 
-	CW->end();
-	CW->show();
 	view->redraw();
 }
 
@@ -1520,13 +1581,15 @@ void NewCB(Fl_Widget* w, void* p)
 
 void Boss_Menu(Fl_Widget* w, void* p)
 {
-	string pass;
+	string pass, name;
 	Fl_Button* b = (Fl_Button*)w;
 	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(1);
+	name = temp->value();
 	temp = (Fl_Input*)b->parent()->child(2);
 	pass = temp->value();
 	
-	if (pass == "admin")
+	if (name == "admin" && pass == "admin" )
 	{
 		Fl_Window *win = new Fl_Window(500, 300, "POINTY HAIRED BOSS");
 		win->color(FL_WHITE);
@@ -1578,9 +1641,11 @@ void Boss_Menu(Fl_Widget* w, void* p)
 
 void PM_Menu(Fl_Widget* w, void* p)
 {
-	string pass;
+	string pass, name;
 	Fl_Button* b = (Fl_Button*)w;
 	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(1);
+	name = temp->value();
 	temp = (Fl_Input*)b->parent()->child(2);
 	pass = temp->value();
 
@@ -1588,7 +1653,7 @@ void PM_Menu(Fl_Widget* w, void* p)
 
 	for (int i =0;i<Managers.size();i++)
 	{
-		if (pass == Managers[i].password)
+		if (name == Managers[i].pm_name && pass == Managers[i].password)
 		{
 			flag = 1;
 			break;
@@ -1626,9 +1691,11 @@ void PM_Menu(Fl_Widget* w, void* p)
 
 void Cust_Menu(Fl_Widget* w, void* p)
 {
-	string pass;
+	string pass, name;
 	Fl_Button* b = (Fl_Button*)w;
 	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(1);
+	name = temp->value();
 	temp = (Fl_Input*)b->parent()->child(2);
 	pass = temp->value();
 
@@ -1636,7 +1703,7 @@ void Cust_Menu(Fl_Widget* w, void* p)
 
 	for (int i = 0; i<Customers.size(); i++)
 	{
-		if (pass == Customers[i].password)
+		if (name == Customers[i].cust_name && pass == Customers[i].password)
 		{
 			flag = 1;
 			break;
@@ -1674,9 +1741,11 @@ void Cust_Menu(Fl_Widget* w, void* p)
 
 void SA_Menu(Fl_Widget* w, void* p)
 {
-	string pass;
+	string pass, name;
 	Fl_Button* b = (Fl_Button*)w;
 	Fl_Input* temp;
+	temp = (Fl_Input*)b->parent()->child(1);
+	name = temp->value();
 	temp = (Fl_Input*)b->parent()->child(2);
 	pass = temp->value();
 
@@ -1684,7 +1753,7 @@ void SA_Menu(Fl_Widget* w, void* p)
 
 	for (int i = 0; i<SalesAssociates.size(); i++)
 	{
-		if (pass == SalesAssociates[i].password)
+		if (name == SalesAssociates[i].sa_name && pass == SalesAssociates[i].password)
 		{
 			flag = 1;
 			break;
@@ -1697,7 +1766,7 @@ void SA_Menu(Fl_Widget* w, void* p)
 		view = new View(0, 0, 300, 350);
 
 		Fl_Button *COCB = new Fl_Button(50, 50, 200, 50, "CREATE ORDER");
-		Fl_Button *CBCB = new Fl_Button(50, 150, 200, 50, "CREATE BILL");
+		Fl_Button *CBCB = new Fl_Button(50, 150, 200, 50, "GENERATE BILL");
 		Fl_Button *SRCB = new Fl_Button(50, 250, 200, 50, "SALES REPORT");
 
 		COCB->callback(OrderCB);
@@ -1722,19 +1791,27 @@ void SA_Menu(Fl_Widget* w, void* p)
 
 int main()
 {
-	Fl_Window *win = new Fl_Window(600, 500, "ROBOSHOP");
+	Fl_Window *win = new Fl_Window(625, 450, "ROBBIE ROBOSHOP");
 	win->color(FL_WHITE);
-	view = new View(0, 0, 600, 500);
+	view = new View(0, 0, 625, 450); // Child 0
 
-	Fl_Input *user = new Fl_Input(150, 50, 100, 30, "User Name  "); // Child 0
-	Fl_Input *pass = new Fl_Input(400, 50, 100, 30, "Password  "); // Child 1
+	Fl_Input *user = new Fl_Input(170, 80, 100, 30, "USER NAME  "); // Child 1
+	user->color(FL_LIGHT1);
+	Fl_Input *pass = new Fl_Input(420, 80, 100, 30, "PASSWORD  "); // Child 2
+	pass->color(FL_LIGHT1);
 
-	Fl_Button *Boss_button = new Fl_Button(150, 150, 150, 50, "BOSS"); // Child 2
-	Fl_Button *PM_button = new Fl_Button(350, 150, 150, 50, "MANAGER"); // Child 3
-	Fl_Button *Cust_button = new Fl_Button(150, 250, 150, 50, "CUSTOMER"); // Child 4
-	Fl_Button *SA_button = new Fl_Button(350, 250, 150, 50, "SALES ASSOCIATE"); // Child 5
-	Fl_Button *Help_button = new Fl_Button(175, 350, 100, 50, "HELP"); // Child 6
-	Fl_Button *Quit_button = new Fl_Button(375, 350, 100, 50, "QUIT"); // Child 7
+	Fl_Button *Boss_button = new Fl_Button(150, 150, 150, 50, "BOSS"); // Child 3
+	Boss_button->color(FL_RED);
+	Fl_Button *PM_button = new Fl_Button(350, 150, 150, 50, "MANAGER"); // Child 4
+	PM_button->color(FL_BLUE);
+	Fl_Button *Cust_button = new Fl_Button(150, 250, 150, 50, "CUSTOMER"); // Child 5
+	Cust_button->color(FL_GREEN);
+	Fl_Button *SA_button = new Fl_Button(350, 250, 150, 50, "SALES ASSOCIATE"); // Child 6
+	SA_button->color(FL_CYAN);
+	Fl_Button *Help_button = new Fl_Button(175, 350, 100, 50, "HELP"); // Child 7
+	Help_button->color(FL_YELLOW);
+	Fl_Button *Quit_button = new Fl_Button(375, 350, 100, 50, "QUIT"); // Child 8
+	Quit_button->color(FL_DARK_MAGENTA);
 
 	Boss_button->callback(Boss_Menu);
 	PM_button->callback(PM_Menu);
@@ -1744,7 +1821,11 @@ int main()
 	Help_button->callback(HelpCB);
 	Quit_button->callback(QuitCB);
 
-	win->end();
+	Fl_Box *box = new Fl_Box(220, 0, 150, 75, "Welcome To Robbie Roboshop");
+	box->labelfont(FL_BOLD + FL_ITALIC);
+	box->labelsize(28);
+	box->labelcolor(FL_DARK_BLUE);
+
 	win->show();
 	return (Fl::run());
 }
