@@ -1,0 +1,150 @@
+#include <FL/Fl_File_Chooser.H>
+
+void SaveOrderCB(Fl_Widget* w, void* p)
+{
+	Fl_File_Chooser SOrder(".", "*", 1, "Save Order");
+	SOrder.show();
+
+	while (SOrder.shown())
+	{
+		Fl::wait();
+	}
+
+	ofstream write_Orders;
+	write_Orders.open(SOrder.value(1));
+
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		write_Orders << Orders[i].order_no << "@"
+			<< Orders[i].cust_no << "@"
+			<< Orders[i].cust_name << "@"
+			<< Orders[i].robots_ordered << "@"
+			<< Orders[i].sa_name << "@"
+			<< Orders[i].sales_date << "@"
+			<< Orders[i].model_name << "@"
+			<< Orders[i].sub_total << "@"
+			<< Orders[i].shipping << "@"
+			<< Orders[i].tax << "@"
+			<< Orders[i].net_total << endl;
+	}
+}
+
+void SaveRobotCB(Fl_Widget* w, void* p)
+{
+	Fl_File_Chooser SRobot(".", "*", 1, "Save Robot");
+	SRobot.show();
+
+	while (SRobot.shown())
+	{
+		Fl::wait();
+	}
+
+	ofstream write_Robots;
+	write_Robots.open(SRobot.value(1));
+
+	for (int i = 0; i < Robots.size(); i++)
+	{
+		write_Robots << Robots[i].r_name << "@"
+			<< Robots[i].r_no << "@"
+			<< Robots[i].description << "@"
+			<< Robots[i].image << "@"
+			<< Robots[i].r_cost << "@"
+			<< Robots[i].r_price << "@"
+			<< Robots[i].r_profit << "@"
+			<< Robots[i].head_name << "@"
+			<< Robots[i].head_type << "@"
+			<< Robots[i].head_cost << "@"
+			<< Robots[i].head_weight << "@"
+			<< Robots[i].head_partno << "@"
+			<< Robots[i].torso_name << "@"
+			<< Robots[i].torso_type << "@"
+			<< Robots[i].torso_cost << "@"
+			<< Robots[i].torso_weight << "@"
+			<< Robots[i].torso_partno << "@"
+			<< Robots[i].compartments << "@"
+			<< Robots[i].locomoter_name << "@"
+			<< Robots[i].locomoter_type << "@"
+			<< Robots[i].locomoter_cost << "@"
+			<< Robots[i].locomoter_weight << "@"
+			<< Robots[i].locomoter_partno << "@"
+			<< Robots[i].max_speed << "@"
+			<< Robots[i].power_consumed << "@"
+			<< Robots[i].battery_name << "@"
+			<< Robots[i].battery_type << "@"
+			<< Robots[i].battery_cost << "@"
+			<< Robots[i].battery_weight << "@"
+			<< Robots[i].battery_partno << "@"
+			<< Robots[i].max_power << "@"
+			<< Robots[i].energy << "@"
+			<< Robots[i].arms_name << "@"
+			<< Robots[i].arms_type << "@"
+			<< Robots[i].arms_cost << "@"
+			<< Robots[i].arms_weight << "@"
+			<< Robots[i].arms_partno << "@"
+			<< Robots[i].no_of_arms << "@"
+			<< Robots[i].arms_power << endl;
+	}
+}
+
+void SaveCustCB(Fl_Widget* w, void* p)
+{
+	Fl_File_Chooser SCust(".", "*", 1, "Save Cust");
+	SCust.show();
+
+	while (SCust.shown())
+	{
+		Fl::wait();
+	}
+
+	ofstream write_Cust;
+	write_Cust.open(SCust.value(1));
+
+	for (int i = 0; i < Customers.size(); i++)
+	{
+		write_Cust << Customers[i].cust_no << "@"
+			<< Customers[i].cust_name << "@"
+			<< Customers[i].password << endl;
+	}
+}
+
+void SaveSACB(Fl_Widget* w, void* p)
+{
+	Fl_File_Chooser SSA(".", "*", 1, "Save SA");
+	SSA.show();
+
+	while (SSA.shown())
+	{
+		Fl::wait();
+	}
+
+	ofstream write_SA;
+	write_SA.open(SSA.value(1));
+
+	for (int i = 0; i < SalesAssociates.size(); i++)
+	{
+		write_SA << SalesAssociates[i].sa_no << "@"
+			<< SalesAssociates[i].sa_name << "@"
+			<< SalesAssociates[i].password << endl;
+	}
+}
+
+void SavePMCB(Fl_Widget* w, void* p)
+{
+	Fl_File_Chooser SPM(".", "*", 1, "Save PM");
+	SPM.show();
+
+	while (SPM.shown())
+	{
+		Fl::wait();
+	}
+
+	ofstream write_PM;
+	write_PM.open(SPM.value(1));
+
+	for (int i = 0; i < Managers.size(); i++)
+	{
+		write_PM << Managers[i].pm_no << "@"
+			<< Managers[i].pm_name << "@"
+			<< Managers[i].password << endl;
+	}
+}
