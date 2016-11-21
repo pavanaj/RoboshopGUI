@@ -1802,7 +1802,7 @@ void SA_Menu(Fl_Widget* w, void* p)
 		Fl_Button *COCB = new Fl_Button(50, 50, 200, 50, "CREATE ORDER");
 		Fl_Button *CBCB = new Fl_Button(50, 150, 200, 50, "GENERATE BILL");
 		Fl_Button *SRCB = new Fl_Button(50, 250, 200, 50, "SALES REPORT");
-		Fl_Button *UOCB = new Fl_Button(50, 250, 200, 50, "UNDO ORDER");
+		Fl_Button *UOCB = new Fl_Button(50, 350, 200, 50, "UNDO ORDER");
 
 		COCB->callback(OrderCB);
 		CBCB->callback(BillCB);
