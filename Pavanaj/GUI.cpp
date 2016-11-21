@@ -198,6 +198,21 @@ double STD(string s)
 	return d;
 }
 
+void UndoManagerCB(Fl_Widget* w, void* p)
+{
+	Managers.pop_back();
+}
+
+void UndoCustomerCB(Fl_Widget* w, void* p)
+{
+	Customers.pop_back();
+}
+
+void UndoSACB(Fl_Widget* w, void* p)
+{
+	SalesAssociates.pop_back();
+}
+
 void Delete_RP_CB(Fl_Widget* w, void* p)
 {
 	string rp_no;
@@ -1449,8 +1464,8 @@ void NewCB(Fl_Widget* w, void* p)
 	R.image = "Optimus.jpg";
 	R.r_no = "101";
 	R.r_cost = 500;
-	R.r_price = 800;
-	R.r_profit = 300;
+	R.r_price = 1250;
+	R.r_profit = 750;
 	R.description = "Autobot Leader";
 	R.head_name = "op_head";
 	R.head_type = "head";
@@ -1534,10 +1549,10 @@ void NewCB(Fl_Widget* w, void* p)
 	O.sa_name = "Simmons";
 	O.sales_date = "01/01/01";
 	O.model_name = "Optimus";
-	O.sub_total = 800;
-	O.shipping = 80;
-	O.tax = 64;
-	O.net_total = 944;
+	O.sub_total = 1250;
+	O.shipping = 150;
+	O.tax = 100;
+	O.net_total = 1500;
 	Orders.push_back(O);
 
 	O.order_no = "2";
@@ -1547,10 +1562,10 @@ void NewCB(Fl_Widget* w, void* p)
 	O.sa_name = "William";
 	O.sales_date = "02/02/02";
 	O.model_name = "Bumblebee";
-	O.sub_total = 250;
-	O.shipping = 25;
-	O.tax = 25;
-	O.net_total = 300;
+	O.sub_total = 750;
+	O.shipping = 150;
+	O.tax = 100;
+	O.net_total = 1000;
 	Orders.push_back(O);
 
 	C.cust_no = "1";
@@ -1579,6 +1594,16 @@ void NewCB(Fl_Widget* w, void* p)
 	Managers.push_back(PM);
 }
 
+void UndoRobotCB(Fl_Widget* w, void* p)
+{
+	Robots.pop_back();
+}
+
+void UndoOrderCB(Fl_Widget* w, void* p)
+{
+	Orders.pop_back();
+}
+
 void Boss_Menu(Fl_Widget* w, void* p)
 {
 	string pass, name;
@@ -1603,8 +1628,8 @@ void Boss_Menu(Fl_Widget* w, void* p)
 			{ "Save Data",0,(Fl_Callback*)SaveCB },
 			{ 0 },
 			{ "&Reports",0,0,0, FL_SUBMENU },
-			{ "Sales Report",0,(Fl_Callback*)SalesReportCB },
-			{ "View Orders",0,(Fl_Callback*)OrdersCB },
+			{ "Sales Associates",0,(Fl_Callback*)SalesReportCB },
+			{ "Orders",0,(Fl_Callback*)OrdersCB },
 			{ 0 },
 			{ "&Inventory",0,0,0, FL_SUBMENU },
 			{ "Model's Sales",0,(Fl_Callback*)ModelSalesCB },
@@ -1620,7 +1645,14 @@ void Boss_Menu(Fl_Widget* w, void* p)
 			{ "Customers",0,(Fl_Callback*)ViewCustomerCB },
 			{ "Sales Associates",0,(Fl_Callback*)ViewSACB },
 			{ 0 },
-			{ 0 }
+			{ "&Undo",0,0,0, FL_SUBMENU },
+			{ "Product Manager",0,(Fl_Callback*)UndoManagerCB },
+			{ "Customer",0,(Fl_Callback*)UndoCustomerCB },
+			{ "Sales Associate",0,(Fl_Callback*)UndoSACB },
+			{ "Order",0,(Fl_Callback*)UndoOrderCB },
+			{ "Robot Part",0,(Fl_Callback*)UndoRobotCB },
+			{ 0 },
+		{ 0 }
 		};
 		menubar->menu(menuitems);
 		win->end();
@@ -1661,17 +1693,19 @@ void PM_Menu(Fl_Widget* w, void* p)
 	}
 	if (flag == 1 || pass=="admin")
 	{
-		Fl_Window *win = new Fl_Window(400, 350, "PRODUCT MANAGER");
+		Fl_Window *win = new Fl_Window(400, 450, "PRODUCT MANAGER");
 		win->color(FL_WHITE);
-		view = new View(0, 0, 400, 350);
+		view = new View(0, 0, 400, 450);
 
 		Fl_Button *CRPCB = new Fl_Button(50, 50, 300, 50, "CREATE ROBOT PARTS");
 		Fl_Button *DRPCB = new Fl_Button(50, 150, 300, 50, "DELETE ROBOT PARTS");
 		Fl_Button *VRPCB = new Fl_Button(50, 250, 300, 50, "VIEW ROBOT PARTS");
+		Fl_Button *URPCB = new Fl_Button(50, 350, 300, 50, "UNDO ROBOT PARTS");
 
 		CRPCB->callback(RoboPartsCB);
 		DRPCB->callback(DeleteRPCB);
 		VRPCB->callback(ViewRPCB);
+		URPCB->callback(UndoRobotCB);
 
 		win->end();
 		win->show();
@@ -1761,17 +1795,19 @@ void SA_Menu(Fl_Widget* w, void* p)
 	}
 	if (flag == 1 || pass == "admin")
 	{
-		Fl_Window *	win = new Fl_Window(300, 350, "SALES ASSOCIATE");
+		Fl_Window *	win = new Fl_Window(300, 450, "SALES ASSOCIATE");
 		win->color(FL_WHITE);
-		view = new View(0, 0, 300, 350);
+		view = new View(0, 0, 300, 450);
 
 		Fl_Button *COCB = new Fl_Button(50, 50, 200, 50, "CREATE ORDER");
 		Fl_Button *CBCB = new Fl_Button(50, 150, 200, 50, "GENERATE BILL");
 		Fl_Button *SRCB = new Fl_Button(50, 250, 200, 50, "SALES REPORT");
+		Fl_Button *UOCB = new Fl_Button(50, 250, 200, 50, "UNDO ORDER");
 
 		COCB->callback(OrderCB);
 		CBCB->callback(BillCB);
 		SRCB->callback(SAReportCB);
+		UOCB->callback(UndoOrderCB);
 		
 		win->end();
 		win->show();
@@ -1800,15 +1836,15 @@ int main()
 	Fl_Input *pass = new Fl_Input(420, 80, 100, 30, "PASSWORD  "); // Child 2
 	pass->color(FL_LIGHT1);
 
-	Fl_Button *Boss_button = new Fl_Button(150, 150, 150, 50, "BOSS"); // Child 3
+	Fl_Button *Boss_button = new Fl_Button(140, 150, 150, 50, "BOSS"); // Child 3
 	Boss_button->color(FL_RED);
 	Fl_Button *PM_button = new Fl_Button(350, 150, 150, 50, "MANAGER"); // Child 4
 	PM_button->color(FL_BLUE);
-	Fl_Button *Cust_button = new Fl_Button(150, 250, 150, 50, "CUSTOMER"); // Child 5
+	Fl_Button *Cust_button = new Fl_Button(140, 250, 150, 50, "CUSTOMER"); // Child 5
 	Cust_button->color(FL_GREEN);
 	Fl_Button *SA_button = new Fl_Button(350, 250, 150, 50, "SALES ASSOCIATE"); // Child 6
 	SA_button->color(FL_CYAN);
-	Fl_Button *Help_button = new Fl_Button(175, 350, 100, 50, "HELP"); // Child 7
+	Fl_Button *Help_button = new Fl_Button(165, 350, 100, 50, "HELP"); // Child 7
 	Help_button->color(FL_YELLOW);
 	Fl_Button *Quit_button = new Fl_Button(375, 350, 100, 50, "QUIT"); // Child 8
 	Quit_button->color(FL_DARK_MAGENTA);
@@ -1821,7 +1857,7 @@ int main()
 	Help_button->callback(HelpCB);
 	Quit_button->callback(QuitCB);
 
-	Fl_Box *box = new Fl_Box(220, 0, 150, 75, "Welcome To Robbie Roboshop");
+	Fl_Box *box = new Fl_Box(220, 0, 150, 50, "Welcome To Robbie Roboshop");
 	box->labelfont(FL_BOLD + FL_ITALIC);
 	box->labelsize(28);
 	box->labelcolor(FL_DARK_BLUE);
