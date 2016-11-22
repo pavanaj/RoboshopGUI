@@ -1,5 +1,4 @@
-#include "View.h"
-#include "std_lib_facilities.h"
+#include <std_lib_facilities.h>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -24,6 +23,17 @@
 #include <FL/Fl_File_Chooser.H>
 #include <math.h>
 
+class View : public Fl_Box
+{
+public:
+	bool dirty;
+	View(int x, int y, int w, int h) : Fl_Box(x, y, w, h) {
+		dirty = false;
+	};
+	void draw();
+	bool saved();
+};
+
 View *view;
 
 class MyInput : public Fl_Input
@@ -31,15 +41,15 @@ class MyInput : public Fl_Input
 	static void Copy_CB(Fl_Widget*, void *userdata)
 	{
 		MyInput *in = (MyInput*)userdata;
-		in->copy(0);   
-		in->copy(1);    
+		in->copy(0);
+		in->copy(1);
 	}
 	static void Paste_CB(Fl_Widget*, void *userdata)
 	{
 		MyInput *in = (MyInput*)userdata;
-		Fl::paste(*in, 1);    
+		Fl::paste(*in, 1);
 	}
-	public:
+public:
 	int handle(int e)
 	{
 		switch (e)
@@ -55,19 +65,19 @@ class MyInput : public Fl_Input
 				};
 				const Fl_Menu_Item *m = rclick_menu->popup(Fl::event_x(), Fl::event_y(), 0, 0, 0);
 				if (m) m->do_callback(0, m->user_data());
-				return(1);          
+				return(1);
 			}
 			break;
 		case FL_RELEASE:
 			if (Fl::event_button() == FL_RIGHT_MOUSE)
 			{
-				return(1);          
+				return(1);
 			}
 			break;
 		}
-		return(Fl_Input::handle(e));    
+		return(Fl_Input::handle(e));
 	}
-	MyInput(int X, int Y, int W, int H, const char*L = 0) :Fl_Input(X, Y, W, H, L) 
+	MyInput(int X, int Y, int W, int H, const char*L = 0) :Fl_Input(X, Y, W, H, L)
 	{}
 };
 
@@ -1763,8 +1773,8 @@ void Boss_Menu(Fl_Widget* w, void* p)
 	name = temp->value();
 	temp = (Fl_Input*)b->parent()->child(2);
 	pass = temp->value();
-	
-	if (name == "admin" && pass == "admin" )
+
+	if (name == "admin" && pass == "admin")
 	{
 		Fl_Window *win = new Fl_Window(500, 300, "POINTY HAIRED BOSS");
 		win->color(FL_WHITE);
@@ -1809,7 +1819,7 @@ void Boss_Menu(Fl_Widget* w, void* p)
 			{ "Order",0,(Fl_Callback*)UndoOrderCB },
 			{ "Robot Part",0,(Fl_Callback*)UndoRobotCB },
 			{ 0 },
-		{ 0 }
+			{ 0 }
 		};
 		menubar->menu(menuitems);
 		win->end();
@@ -1840,7 +1850,7 @@ void PM_Menu(Fl_Widget* w, void* p)
 
 	int flag = 0;
 
-	for (int i =0;i<Managers.size();i++)
+	for (int i = 0; i<Managers.size(); i++)
 	{
 		if (name == Managers[i].pm_name && pass == Managers[i].password)
 		{
@@ -1848,7 +1858,7 @@ void PM_Menu(Fl_Widget* w, void* p)
 			break;
 		}
 	}
-	if (flag == 1 || pass=="admin")
+	if (flag == 1 || pass == "admin")
 	{
 		Fl_Window *win = new Fl_Window(400, 450, "PRODUCT MANAGER");
 		win->color(FL_WHITE);
@@ -1876,7 +1886,7 @@ void PM_Menu(Fl_Widget* w, void* p)
 		box->labelcolor(FL_RED);
 		win->show();
 	}
-	
+
 	Fl::run();
 }
 
@@ -1913,7 +1923,7 @@ void Cust_Menu(Fl_Widget* w, void* p)
 		CCB->callback(CatalogCB);
 		CBCB->callback(CustBillCB);
 		COCB->callback(CustOrderCB);
-		
+
 		win->end();
 		win->show();
 	}
@@ -1965,7 +1975,7 @@ void SA_Menu(Fl_Widget* w, void* p)
 		CBCB->callback(BillCB);
 		SRCB->callback(SAReportCB);
 		UOCB->callback(UndoOrderCB);
-		
+
 		win->end();
 		win->show();
 	}
@@ -1978,7 +1988,7 @@ void SA_Menu(Fl_Widget* w, void* p)
 		box->labelcolor(FL_RED);
 		win->show();
 	}
-	
+
 	Fl::run();
 }
 
