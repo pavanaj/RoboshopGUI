@@ -1,15 +1,16 @@
 # RoboshopGUI
-C++ GUI Application to manage a Robot Workshop
+Inventory Management System for a Robot Shop. The application is an interface for recording and ordering robot parts, managing customers and sales associates, manager and administrative roles.
 
 CSE 1325 - Introduction to Object Oriented Programming
 
-Contributors:
+## Contributors:
 * Pavanaj Biyani
 * Kartik Gupta
 
-Requirements:
+## Requirements:
 * FLTK
 * C++ Compiler
 
-To execute the program:
+## To compile and execute:
+
 fltk-config --use-images --compile GUI.cpp
